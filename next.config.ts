@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  distDir: "/tmp/opexfood-next",
+  ...(process.env.VERCEL ? {} : { distDir: "/tmp/opexfood-next" }),
   images: {
     remotePatterns: [
       {
