@@ -51,11 +51,8 @@ export default function HeroSection() {
             className="hero-fade mt-10 flex flex-col sm:flex-row gap-4"
             style={{ animationDelay: "0.45s" }}
           >
-            <Button variant="primary" size="lg">
-              Demander une Démo
-            </Button>
             <a href="/demo">
-              <Button variant="outline" size="lg">
+              <Button variant="primary" size="lg">
                 Tester maintenant
               </Button>
             </a>

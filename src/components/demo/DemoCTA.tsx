@@ -14,12 +14,9 @@ export default function DemoCTA() {
             Deploiement en 48h, sans engagement.
           </p>
           <div className="reveal reveal-delay-2 mt-8 flex flex-col sm:flex-row gap-4">
-            <Button variant="primary" size="lg">
-              Demander une Demo Personnalisee
-            </Button>
             <a href="/#tarifs">
-              <Button variant="outline" size="lg">
-                Voir les Tarifs
+              <Button variant="primary" size="lg">
+                Tester maintenant
               </Button>
             </a>
           </div>

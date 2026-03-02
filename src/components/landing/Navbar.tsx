@@ -70,7 +70,7 @@ export default function Navbar() {
               Se Connecter
             </Button>
             <Button variant="primary" size="sm" onClick={() => router.push("/demo")}>
-              Demander une Demo
+              Tester maintenant
             </Button>
           </div>
 
@@ -125,7 +125,7 @@ export default function Navbar() {
                   className="w-full"
                   onClick={() => { setMobileOpen(false); router.push("/demo"); }}
                 >
-                  Demander une Demo
+                  Tester maintenant
                 </Button>
               </div>
             </div>
