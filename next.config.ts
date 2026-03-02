@@ -10,15 +10,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async redirects() {
-    return [
-      {
-        source: "/demo",
-        destination: "/#modules",
-        permanent: true,
-      },
-    ];
-  },
 };
 
 export default nextConfig;
