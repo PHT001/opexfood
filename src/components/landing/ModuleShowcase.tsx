@@ -18,41 +18,46 @@ export default function ModuleShowcase() {
           subtitle="Trois modules puissants qui travaillent ensemble pour automatiser votre activité."
         />
 
-        {/* Vertical timeline — mobile only */}
-        <div className="mt-12 mb-4 flex flex-col items-center lg:hidden">
+        {/* Vertical timeline — mobile & tablet only (hidden on lg+) */}
+        <div
+          id="module-timeline"
+          style={{
+            marginTop: "3rem",
+            marginBottom: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           {/* Chatbot — orange filled */}
-          <div className="flex flex-col items-center">
-            <div className="flex items-center justify-center w-14 h-14 rounded-full bg-orange-500">
-              <MessageSquareMore className="w-6 h-6 text-white" />
-            </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: "50%", backgroundColor: "#f97316" }}>
+            <MessageSquareMore style={{ width: 24, height: 24, color: "#ffffff" }} />
           </div>
 
           {/* Line */}
-          <div className="w-px h-10" style={{ backgroundColor: "#cbd5e1" }} />
+          <div style={{ width: 1, height: 40, backgroundColor: "#cbd5e1" }} />
 
           {/* Fidélité — violet outlined */}
-          <div className="flex flex-col items-center">
-            <div
-              className="flex items-center justify-center w-14 h-14 rounded-full"
-              style={{ backgroundColor: "#f5f3ff", border: "2px solid #c4b5fd" }}
-            >
-              <Gift className="w-6 h-6" style={{ color: "#8b5cf6" }} />
-            </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: "50%", backgroundColor: "#f5f3ff", border: "2px solid #c4b5fd" }}>
+            <Gift style={{ width: 24, height: 24, color: "#8b5cf6" }} />
           </div>
 
           {/* Line */}
-          <div className="w-px h-10" style={{ backgroundColor: "#cbd5e1" }} />
+          <div style={{ width: 1, height: 40, backgroundColor: "#cbd5e1" }} />
 
           {/* CRM — blue outlined */}
-          <div className="flex flex-col items-center">
-            <div
-              className="flex items-center justify-center w-14 h-14 rounded-full"
-              style={{ backgroundColor: "#eff6ff", border: "2px solid #93c5fd" }}
-            >
-              <LayoutDashboard className="w-6 h-6" style={{ color: "#3b82f6" }} />
-            </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 56, height: 56, borderRadius: "50%", backgroundColor: "#eff6ff", border: "2px solid #93c5fd" }}>
+            <LayoutDashboard style={{ width: 24, height: 24, color: "#3b82f6" }} />
           </div>
         </div>
+
+        <style jsx>{`
+          @media (min-width: 1024px) {
+            #module-timeline {
+              display: none !important;
+            }
+          }
+        `}</style>
 
         <div className="mt-16 space-y-16 lg:space-y-20">
           {coreModules.map((module, index) => (
