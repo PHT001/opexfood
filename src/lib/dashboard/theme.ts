@@ -124,6 +124,7 @@ const cuisinePalettes: Record<CuisineType, { primary: string; accent: string; se
   healthy:       { primary: "#16a34a", accent: "#84cc16", secondary: "#14532d" },    // Vert nature + citron vert
   pizzeria:      { primary: "#dc2626", accent: "#15803d", secondary: "#450a0a" },    // Rouge tomate + vert basilic
   autre:         { primary: "#6366f1", accent: "#8b5cf6", secondary: "#1e1b4b" },    // Indigo + violet
+  none:          { primary: "#6366f1", accent: "#8b5cf6", secondary: "#1e1b4b" },    // Fallback (same as autre)
 };
 
 interface AmbianceStyle {
