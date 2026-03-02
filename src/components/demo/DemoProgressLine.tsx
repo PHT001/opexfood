@@ -4,24 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { MessageSquareMore, LayoutDashboard, Gift } from "lucide-react";
 
 const steps = [
-  { id: "step-chatbot", label: "Acquisition", icon: MessageSquareMore, activeBg: "#f97316", borderColor: "#fdba74", inactiveBg: "#fff7ed" },
-  { id: "step-2", label: "CRM", icon: LayoutDashboard, activeBg: "#3b82f6", borderColor: "#93c5fd", inactiveBg: "#eff6ff" },
-  { id: "step-3", label: "Fidélité", icon: Gift, activeBg: "#8b5cf6", borderColor: "#c4b5fd", inactiveBg: "#f5f3ff" },
+  { id: "step-chatbot", label: "Chatbot", icon: MessageSquareMore, activeBg: "#f97316", borderColor: "#fdba74" },
+  { id: "step-2", label: "CRM", icon: LayoutDashboard, activeBg: "#3b82f6", borderColor: "#93c5fd" },
+  { id: "step-3", label: "Fidélité", icon: Gift, activeBg: "#8b5cf6", borderColor: "#c4b5fd" },
 ];
 
 export default function DemoProgressLine() {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const rafRef = useRef<number>(0);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile, { passive: true });
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   useEffect(() => {
     const sectionEls = steps.map((s) => document.getElementById(s.id));
@@ -70,102 +62,135 @@ export default function DemoProgressLine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const dotSize = isMobile ? 18 : 28;
-  const iconSize = isMobile ? 8 : 12;
-  const gap = isMobile ? 24 : 48;
-  const rightPos = isMobile ? 4 : 16;
-
   return (
     <div
       style={{
         position: "fixed",
-        right: rightPos,
-        top: "50%",
-        transform: "translateY(-50%)",
-        zIndex: 40,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        transition: "opacity 0.5s",
+        top: 64,
+        left: 0,
+        right: 0,
+        zIndex: 45,
+        transition: "opacity 0.4s, transform 0.4s",
         opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(-100%)",
         pointerEvents: visible ? "auto" : "none",
       }}
     >
-      {/* Background line */}
+      {/* Background bar */}
       <div
         style={{
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)",
-          top: 0,
-          bottom: 0,
-          width: 2,
-          backgroundColor: "#e2e8f0",
-          borderRadius: 9999,
+          backgroundColor: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderBottom: "1px solid #e2e8f0",
+          padding: "8px 16px",
         }}
-      />
+      >
+        <div
+          style={{
+            maxWidth: 400,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 0,
+          }}
+        >
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            const isActive = i <= activeIndex;
+            const isCurrent = i === activeIndex;
+            const isLast = i === steps.length - 1;
 
-      {/* Progress fill */}
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)",
-          top: 0,
-          width: 2,
-          borderRadius: 9999,
-          transition: "height 0.3s ease-out",
-          height: `${progress * 100}%`,
-          background: "linear-gradient(to bottom, #ea580c, #7c3aed)",
-        }}
-      />
+            return (
+              <div key={step.id} style={{ display: "flex", alignItems: "center", flex: isLast ? "0 0 auto" : "1 1 0%" }}>
+                {/* Dot + label */}
+                <button
+                  onClick={() => {
+                    document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    cursor: "pointer",
+                    background: "none",
+                    border: "none",
+                    padding: "2px 0",
+                    flexShrink: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: "50%",
+                      border: "2px solid",
+                      borderColor: isActive ? step.activeBg : step.borderColor,
+                      backgroundColor: isActive ? step.activeBg : "#ffffff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.3s",
+                      transform: isCurrent ? "scale(1.15)" : "scale(1)",
+                      boxShadow: isCurrent ? `0 2px 8px ${step.activeBg}40` : "none",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon
+                      style={{
+                        width: 11,
+                        height: 11,
+                        color: isActive ? "#ffffff" : "#94a3b8",
+                        transition: "color 0.3s",
+                      }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: isActive ? step.activeBg : "#94a3b8",
+                      transition: "color 0.3s",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {step.label}
+                  </span>
+                </button>
 
-      {/* Steps */}
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", gap }}>
-        {steps.map((step, i) => {
-          const Icon = step.icon;
-          const isActive = i <= activeIndex;
-          const isCurrent = i === activeIndex;
-
-          return (
-            <button
-              key={step.id}
-              onClick={() => {
-                document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-              }}
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                background: "none",
-                border: "none",
-                padding: 0,
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  width: dotSize,
-                  height: dotSize,
-                  borderRadius: "50%",
-                  border: "2px solid",
-                  borderColor: isActive ? step.activeBg : step.borderColor,
-                  backgroundColor: isActive ? step.activeBg : "#ffffff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.3s",
-                  transform: isCurrent ? "scale(1.1)" : "scale(1)",
-                  boxShadow: isCurrent ? "0 2px 8px rgba(0,0,0,0.12)" : "none",
-                }}
-              >
-                <Icon style={{ width: iconSize, height: iconSize, color: isActive ? "#ffffff" : "#94a3b8", transition: "color 0.3s" }} />
+                {/* Connecting line between dots */}
+                {!isLast && (
+                  <div
+                    style={{
+                      flex: 1,
+                      height: 2,
+                      marginLeft: 8,
+                      marginRight: 8,
+                      borderRadius: 9999,
+                      backgroundColor: "#e2e8f0",
+                      position: "relative",
+                      overflow: "hidden",
+                      minWidth: 20,
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        borderRadius: 9999,
+                        transition: "width 0.3s ease-out",
+                        width: i < activeIndex ? "100%" : i === activeIndex ? `${Math.min(progress * 100 * steps.length - i * 100, 100)}%` : "0%",
+                        background: `linear-gradient(to right, ${step.activeBg}, ${steps[i + 1]?.activeBg || step.activeBg})`,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-            </button>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
