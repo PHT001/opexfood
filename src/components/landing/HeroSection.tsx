@@ -26,7 +26,7 @@ export default function HeroSection() {
 
           {/* Headline */}
           <h1
-            className="hero-fade mt-8 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight"
+            className="hero-fade mt-8 text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight tracking-tight"
             style={{ animationDelay: "0.15s" }}
           >
             <span className="text-text">Automatisez votre restaurant.</span>
