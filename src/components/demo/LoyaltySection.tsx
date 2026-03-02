@@ -91,7 +91,7 @@ export default function LoyaltySection() {
               })}
             </div>
 
-            <a href="/#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-violet-600 hover:text-violet-700 transition-colors">
+            <a href="#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-violet-600 hover:text-violet-700 transition-colors">
               Ajouter ce module →
             </a>
           </div>

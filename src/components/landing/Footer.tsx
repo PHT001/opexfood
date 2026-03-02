@@ -3,7 +3,7 @@ import Container from "@/components/ui/Container";
 const productLinks = [
   { label: "Modules", href: "#modules" },
   { label: "Tarifs", href: "#tarifs" },
-  { label: "Demo", href: "#cta" },
+  { label: "Demo", href: "#modules" },
   { label: "Changelog", href: "#" },
 ];
 

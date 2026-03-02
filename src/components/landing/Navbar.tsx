@@ -69,7 +69,7 @@ export default function Navbar() {
             <Button variant="ghost" size="sm" onClick={() => router.push("/login")}>
               Se Connecter
             </Button>
-            <Button variant="primary" size="sm" onClick={() => router.push("/demo")}>
+            <Button variant="primary" size="sm" onClick={() => document.getElementById("modules")?.scrollIntoView({ behavior: "smooth" })}>
               Tester maintenant
             </Button>
           </div>
@@ -123,7 +123,7 @@ export default function Navbar() {
                   variant="primary"
                   size="lg"
                   className="w-full"
-                  onClick={() => { setMobileOpen(false); router.push("/demo"); }}
+                  onClick={() => { setMobileOpen(false); document.getElementById("modules")?.scrollIntoView({ behavior: "smooth" }); }}
                 >
                   Tester maintenant
                 </Button>

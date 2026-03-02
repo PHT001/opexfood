@@ -119,7 +119,7 @@ export default function ROISection() {
         </div>
 
         <div className="reveal mt-10 flex justify-center">
-          <a href="/demo">
+          <a href="#modules">
             <Button variant="primary" size="lg">
               Tester maintenant
             </Button>

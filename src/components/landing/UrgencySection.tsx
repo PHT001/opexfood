@@ -68,7 +68,7 @@ export default function UrgencySection() {
 
           {/* CTA */}
           <div className="reveal reveal-delay-3 mt-8">
-            <a href="/demo">
+            <a href="#modules">
               <Button variant="primary" size="lg" icon={ArrowRight} iconPosition="right">
                 Passer au digital maintenant
               </Button>

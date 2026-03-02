@@ -271,7 +271,7 @@ export default function AgentSection() {
               })}
             </div>
 
-            <a href="/#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+            <a href="#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
               Ajouter ce module →
             </a>
           </div>

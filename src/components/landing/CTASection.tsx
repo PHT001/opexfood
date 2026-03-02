@@ -19,7 +19,7 @@ export default function CTASection() {
           </p>
 
           <div className="reveal reveal-delay-2 mt-8 flex flex-col sm:flex-row gap-4">
-            <a href="/demo">
+            <a href="#tarifs">
               <Button variant="primary" size="lg">
                 Tester maintenant
               </Button>

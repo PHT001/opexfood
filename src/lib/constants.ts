@@ -17,7 +17,6 @@ import {
 // Navigation
 export const navLinks = [
   { label: "Modules", href: "#modules" },
-  { label: "Services", href: "#services" },
   { label: "Tarifs", href: "#tarifs" },
   { label: "Témoignages", href: "#temoignages" },
 ];

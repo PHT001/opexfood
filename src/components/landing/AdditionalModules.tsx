@@ -23,7 +23,7 @@ export default function AdditionalModules() {
         </div>
 
         <div className="reveal mt-10 flex justify-center">
-          <a href="/demo">
+          <a href="#modules">
             <Button variant="outline" size="lg">
               Tester maintenant
             </Button>
