@@ -70,113 +70,16 @@ export default function DemoProgressLine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ── Mobile: horizontal bar at bottom ── */
-  if (isMobile) {
-    return (
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 40,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 0,
-          padding: "12px 24px",
-          paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
-          backgroundColor: "rgba(255,255,255,0.92)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderTop: "1px solid #f1f5f9",
-          boxShadow: "0 -2px 12px rgba(0,0,0,0.06)",
-          transition: "opacity 0.4s, transform 0.4s",
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0)" : "translateY(100%)",
-          pointerEvents: visible ? "auto" : "none",
-        }}
-      >
-        {steps.map((step, i) => {
-          const Icon = step.icon;
-          const isActive = i <= activeIndex;
-          const isCurrent = i === activeIndex;
+  const dotSize = isMobile ? 22 : 28;
+  const iconSize = isMobile ? 10 : 12;
+  const gap = isMobile ? 28 : 48;
+  const leftPos = isMobile ? 8 : 16;
 
-          return (
-            <div key={step.id} style={{ display: "flex", alignItems: "center" }}>
-              {/* Connector line (before each step except first) */}
-              {i > 0 && (
-                <div
-                  style={{
-                    width: 40,
-                    height: 2,
-                    borderRadius: 1,
-                    backgroundColor: isActive ? step.activeBg : "#e2e8f0",
-                    transition: "background-color 0.3s",
-                  }}
-                />
-              )}
-
-              {/* Step circle */}
-              <button
-                onClick={() => {
-                  document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-                }}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 4,
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    border: "2px solid",
-                    borderColor: isActive ? step.activeBg : step.borderColor,
-                    backgroundColor: isActive ? step.activeBg : step.inactiveBg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.3s",
-                    transform: isCurrent ? "scale(1.15)" : "scale(1)",
-                    boxShadow: isCurrent ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
-                  }}
-                >
-                  <Icon style={{ width: 14, height: 14, color: isActive ? "#ffffff" : "#94a3b8", transition: "color 0.3s" }} />
-                </div>
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    color: isActive ? step.activeBg : "#94a3b8",
-                    transition: "color 0.3s",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {step.label}
-                </span>
-              </button>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  /* ── Desktop: vertical bar on left ── */
   return (
     <div
       style={{
         position: "fixed",
-        left: 16,
+        left: leftPos,
         top: "50%",
         transform: "translateY(-50%)",
         zIndex: 40,
@@ -218,7 +121,7 @@ export default function DemoProgressLine() {
       />
 
       {/* Steps */}
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 48 }}>
+      <div style={{ position: "relative", display: "flex", flexDirection: "column", gap }}>
         {steps.map((step, i) => {
           const Icon = step.icon;
           const isActive = i <= activeIndex;
@@ -244,8 +147,8 @@ export default function DemoProgressLine() {
               <div
                 style={{
                   position: "relative",
-                  width: 28,
-                  height: 28,
+                  width: dotSize,
+                  height: dotSize,
                   borderRadius: "50%",
                   border: "2px solid",
                   borderColor: isActive ? step.activeBg : step.borderColor,
@@ -258,7 +161,7 @@ export default function DemoProgressLine() {
                   boxShadow: isCurrent ? "0 2px 8px rgba(0,0,0,0.12)" : "none",
                 }}
               >
-                <Icon style={{ width: 12, height: 12, color: isActive ? "#ffffff" : "#94a3b8", transition: "color 0.3s" }} />
+                <Icon style={{ width: iconSize, height: iconSize, color: isActive ? "#ffffff" : "#94a3b8", transition: "color 0.3s" }} />
               </div>
             </button>
           );
