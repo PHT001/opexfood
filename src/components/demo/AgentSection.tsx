@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Phone, PhoneIncoming, Clock, Users, ShoppingBag, Mic } from "lucide-react";
+import { Phone, PhoneIncoming, Clock, Users, ShoppingBag, Mic, Plus, CheckCircle2 } from "lucide-react";
+import { useModuleSelection } from "@/context/ModuleSelectionContext";
 import Container from "@/components/ui/Container";
 import { CALL_TRANSCRIPT, CALL_STATS, type CallTranscriptLine } from "@/lib/demo-data";
 
@@ -165,6 +166,8 @@ function CallMockup({
 }
 
 export default function AgentSection() {
+  const { addModule, selectedModules } = useModuleSelection();
+  const isModuleSelected = selectedModules.includes(2);
   const [visibleLines, setVisibleLines] = useState<CallTranscriptLine[]>([]);
   const [isRinging, setIsRinging] = useState(true);
   const [isActive, setIsActive] = useState(false);
@@ -270,9 +273,20 @@ export default function AgentSection() {
               })}
             </div>
 
-            <a href="#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
-              Ajouter ce module →
-            </a>
+            <button
+              onClick={() => addModule(2)}
+              className={`inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                isModuleSelected
+                  ? "bg-green-50 border border-green-300 text-green-700"
+                  : "bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300"
+              }`}
+            >
+              {isModuleSelected ? (
+                <><CheckCircle2 className="w-4 h-4" /> Module ajouté</>
+              ) : (
+                <><Plus className="w-4 h-4" /> Ajouter ce module</>
+              )}
+            </button>
           </div>
 
           {/* Call mockup */}

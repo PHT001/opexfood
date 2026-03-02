@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageSquareMore, Zap, Globe, Clock } from "lucide-react";
+import { MessageSquareMore, Zap, Globe, Clock, Plus, CheckCircle2 } from "lucide-react";
+import { useModuleSelection } from "@/context/ModuleSelectionContext";
 import Container from "@/components/ui/Container";
 import PhoneMockup from "./PhoneMockup";
 import ChatBubble from "./ChatBubble";
@@ -25,6 +26,8 @@ function TypingIndicator() {
 }
 
 export default function ChatbotSection() {
+  const { addModule, selectedModules } = useModuleSelection();
+  const isModuleSelected = selectedModules.includes(0);
   const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([]);
   const [showTyping, setShowTyping] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
@@ -144,9 +147,20 @@ export default function ChatbotSection() {
               })}
             </div>
 
-            <a href="#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors">
-              Ajouter ce module →
-            </a>
+            <button
+              onClick={() => addModule(0)}
+              className={`inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                isModuleSelected
+                  ? "bg-green-50 border border-green-300 text-green-700"
+                  : "bg-orange-50 border border-orange-200 text-orange-700 hover:bg-orange-100 hover:border-orange-300"
+              }`}
+            >
+              {isModuleSelected ? (
+                <><CheckCircle2 className="w-4 h-4" /> Module ajouté</>
+              ) : (
+                <><Plus className="w-4 h-4" /> Ajouter ce module</>
+              )}
+            </button>
           </div>
 
           {/* Phone mockup */}

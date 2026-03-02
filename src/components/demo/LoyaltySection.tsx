@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Gift, Smartphone, Trophy, Heart } from "lucide-react";
+import { Gift, Smartphone, Trophy, Heart, Plus, CheckCircle2 } from "lucide-react";
+import { useModuleSelection } from "@/context/ModuleSelectionContext";
 import Container from "@/components/ui/Container";
 import TabletMockup from "./TabletMockup";
 import NumPad from "./NumPad";
@@ -9,6 +10,8 @@ import LoyaltyResult from "./LoyaltyResult";
 import { LOYALTY_DATA } from "@/lib/demo-data";
 
 export default function LoyaltySection() {
+  const { addModule, selectedModules } = useModuleSelection();
+  const isModuleSelected = selectedModules.includes(1);
   const [digitIndex, setDigitIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
@@ -90,9 +93,20 @@ export default function LoyaltySection() {
               })}
             </div>
 
-            <a href="#tarifs" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold text-violet-600 hover:text-violet-700 transition-colors">
-              Ajouter ce module →
-            </a>
+            <button
+              onClick={() => addModule(1)}
+              className={`inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                isModuleSelected
+                  ? "bg-green-50 border border-green-300 text-green-700"
+                  : "bg-violet-50 border border-violet-200 text-violet-700 hover:bg-violet-100 hover:border-violet-300"
+              }`}
+            >
+              {isModuleSelected ? (
+                <><CheckCircle2 className="w-4 h-4" /> Module ajouté</>
+              ) : (
+                <><Plus className="w-4 h-4" /> Ajouter ce module</>
+              )}
+            </button>
           </div>
 
           {/* iPad mockup side — landscape */}

@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { pricingModules } from "@/lib/constants";
+import { useModuleSelection } from "@/context/ModuleSelectionContext";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Container from "@/components/ui/Container";
-import Button from "@/components/ui/Button";
 import FloatingElements from "@/components/ui/FloatingElements";
 import {
   Check,
@@ -14,8 +13,6 @@ import {
   Phone,
   CheckCircle2,
   Sparkles,
-  ArrowRight,
-  RotateCcw,
 } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -55,41 +52,17 @@ const getPositionDiscount = (position: number) => {
 const indexToModuleId = ["chatbot", "fidelite", "agent_vocal"] as const;
 
 export default function PricingSection() {
-  const router = useRouter();
-  const [isAnnual, setIsAnnual] = useState(true);
-  const [selectedModules, setSelectedModules] = useState<number[]>([]);
-  const [justAdded, setJustAdded] = useState<number | null>(null);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const {
+    selectedModules,
+    toggleModule,
+    isAnnual,
+    setIsAnnual,
+    justAdded,
+    setDrawerOpen,
+  } = useModuleSelection();
   const [expandedCards, setExpandedCards] = useState<number[]>([]);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const MOBILE_VISIBLE_FEATURES = 3;
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  /* ─── handlers ─── */
-  const handleToggle = useCallback(
-    (index: number) => {
-      if (selectedModules.includes(index)) {
-        setSelectedModules((prev) => prev.filter((i) => i !== index));
-      } else {
-        setSelectedModules((prev) => [...prev, index]);
-        setJustAdded(index);
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => setJustAdded(null), 1200);
-      }
-    },
-    [selectedModules]
-  );
-
-  const handleReset = useCallback(() => {
-    setSelectedModules([]);
-    setJustAdded(null);
-  }, []);
 
   /* ─── derived ─── */
   const hasSelection = selectedModules.length > 0;
@@ -103,23 +76,6 @@ export default function PricingSection() {
         ? 15
         : 0
     : 0;
-
-  /* total calculation */
-  const calculateTotal = () => {
-    let total = 0;
-    let fullTotal = 0;
-    selectedModules.forEach((idx, position) => {
-      const base = parsePrice(
-        isAnnual ? pricingModules[idx].priceAnnual : pricingModules[idx].price
-      );
-      fullTotal += base;
-      const disc = getPositionDiscount(position);
-      total += Math.round(base * (1 - disc / 100));
-    });
-    return { total, savings: fullTotal - total };
-  };
-
-  const { total, savings } = calculateTotal();
 
   return (
     <section id="tarifs" className="relative py-16 sm:py-20 overflow-hidden">
@@ -368,7 +324,7 @@ export default function PricingSection() {
                 {/* CTA — always full opacity */}
                 <div className="px-5 pb-5 md:px-6 md:pb-6">
                   <button
-                    onClick={() => handleToggle(index)}
+                    onClick={() => toggleModule(index)}
                     className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
                       isSelected
                         ? "bg-green-50 border-2 border-green-400 text-green-700 hover:bg-green-100"
@@ -408,7 +364,7 @@ export default function PricingSection() {
           )}
         </AnimatePresence>
 
-        {/* ─── Summary bar ─── */}
+        {/* ─── Open drawer CTA ─── */}
         <AnimatePresence>
           {hasSelection && (
             <motion.div
@@ -418,110 +374,41 @@ export default function PricingSection() {
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="mt-8 max-w-5xl mx-auto"
             >
-              <div className="rounded-xl bg-slate-900 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4 flex-wrap">
-                  {/* Module pills */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {selectedModules.map((idx, position) => {
-                      const t = pricingModules[idx];
+              <button
+                onClick={() => setDrawerOpen(true)}
+                className="w-full rounded-xl bg-slate-900 p-5 flex items-center justify-between gap-4 hover:bg-slate-800 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-2">
+                    {selectedModules.map((idx) => {
                       const s = moduleStyles[idx];
                       const MIcon = s.icon;
-                      const disc = getPositionDiscount(position);
                       return (
                         <div
                           key={idx}
-                          className="flex items-center gap-1.5 bg-white/10 rounded-full pl-1.5 pr-3 py-1"
+                          className={`w-8 h-8 rounded-full ${s.bg} flex items-center justify-center border-2 border-slate-900`}
                         >
-                          <div
-                            className={`w-5 h-5 rounded-full ${s.bg} flex items-center justify-center`}
-                          >
-                            <MIcon className="w-3 h-3 text-white" />
-                          </div>
-                          <span className="text-xs font-medium text-white">
-                            {t.name}
-                          </span>
-                          {disc > 0 && (
-                            <span className="text-[10px] font-bold text-green-400">
-                              -{disc}%
-                            </span>
-                          )}
+                          <MIcon className="w-3.5 h-3.5 text-white" />
                         </div>
                       );
                     })}
                   </div>
-
-                  {/* Total */}
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-black text-white">
-                      {total}€
-                    </span>
-                    <span className="text-slate-400 text-sm">/mois</span>
-                    {savings > 0 && (
-                      <span className="text-xs font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">
-                        -{savings}€
-                      </span>
+                  <div className="text-left">
+                    <p className="text-sm font-bold text-white">
+                      {allSelected ? "Pack Complet" : `${selectedModules.length} module${selectedModules.length > 1 ? "s" : ""} sélectionné${selectedModules.length > 1 ? "s" : ""}`}
+                    </p>
+                    {allSelected && (
+                      <p className="text-xs text-green-400 font-medium">
+                        <Sparkles className="w-3 h-3 inline mr-1" />
+                        Réduction maximale activée
+                      </p>
                     )}
                   </div>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleReset}
-                    className="text-xs text-slate-500 hover:text-white transition-colors flex items-center gap-1"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                  </button>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    icon={ArrowRight}
-                    iconPosition="right"
-                    onClick={async () => {
-                      setCheckoutLoading(true);
-                      try {
-                        const moduleIds = selectedModules.map((idx) => indexToModuleId[idx]);
-                        const billing = isAnnual ? "annual" : "monthly";
-                        const res = await fetch("/api/stripe/checkout", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ moduleIds, billing }),
-                        });
-                        if (res.status === 401) {
-                          router.push("/signup");
-                          return;
-                        }
-                        const data = await res.json();
-                        if (data.url) {
-                          window.location.href = data.url;
-                        }
-                      } catch {
-                        router.push("/signup");
-                      } finally {
-                        setCheckoutLoading(false);
-                      }
-                    }}
-                  >
-                    {checkoutLoading ? "Chargement..." : allSelected ? "Activer le Pack Complet" : "Continuer"}
-                  </Button>
-                </div>
-              </div>
-
-              {/* Pack Complet badge */}
-              <AnimatePresence>
-                {allSelected && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="mt-3 text-center"
-                  >
-                    <span className="inline-flex items-center gap-1.5 text-sm font-bold text-green-600">
-                      <Sparkles className="w-4 h-4" />
-                      Pack Complet ! Vous économisez {savings}€/mois
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                <span className="text-sm font-bold text-orange-400 group-hover:text-orange-300 transition-colors">
+                  Voir ma sélection →
+                </span>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

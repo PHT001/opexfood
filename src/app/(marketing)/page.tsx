@@ -2,6 +2,8 @@
 
 import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
 import { MessageSquareMore, LayoutDashboard, Gift, ArrowDown } from "lucide-react";
+import { ModuleSelectionProvider } from "@/context/ModuleSelectionContext";
+import ModuleCartDrawer from "@/components/ui/ModuleCartDrawer";
 import Navbar from "@/components/landing/Navbar";
 import Container from "@/components/ui/Container";
 import HeroSection from "@/components/landing/HeroSection";
@@ -28,9 +30,10 @@ export default function Home() {
   useRevealOnScroll();
 
   return (
-    <>
+    <ModuleSelectionProvider>
       <Navbar />
       <DemoProgressLine />
+      <ModuleCartDrawer />
 
       <main className="relative">
         <HeroSection />
@@ -135,6 +138,6 @@ export default function Home() {
       </main>
 
       <Footer />
-    </>
+    </ModuleSelectionProvider>
   );
 }
