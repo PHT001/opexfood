@@ -73,13 +73,13 @@ export default function DemoProgressLine() {
   const dotSize = isMobile ? 22 : 28;
   const iconSize = isMobile ? 10 : 12;
   const gap = isMobile ? 28 : 48;
-  const leftPos = isMobile ? 8 : 16;
+  const rightPos = isMobile ? 8 : 16;
 
   return (
     <div
       style={{
         position: "fixed",
-        left: leftPos,
+        right: rightPos,
         top: "50%",
         transform: "translateY(-50%)",
         zIndex: 40,
