@@ -36,7 +36,8 @@ export type CuisineType =
   | "oriental"
   | "healthy"
   | "pizzeria"
-  | "autre";
+  | "autre"
+  | "none";
 
 export type Ambiance =
   | "moderne"
