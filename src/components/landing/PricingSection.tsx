@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { pricingModules } from "@/lib/constants";
 import { useModuleSelection } from "@/context/ModuleSelectionContext";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -55,6 +56,7 @@ const getPositionDiscount = (position: number) => {
 const indexToModuleId = ["chatbot", "fidelite", "agent_vocal"] as const;
 
 export default function PricingSection() {
+  const router = useRouter();
   const {
     selectedModules,
     addModule,
@@ -63,9 +65,9 @@ export default function PricingSection() {
     isAnnual,
     setIsAnnual,
     justAdded,
-    setDrawerOpen,
   } = useModuleSelection();
   const [expandedCards, setExpandedCards] = useState<number[]>([]);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const MOBILE_VISIBLE_FEATURES = 3;
 
@@ -81,6 +83,41 @@ export default function PricingSection() {
         ? 15
         : 0
     : 0;
+
+  /* ─── total price calc ─── */
+  let total = 0;
+  selectedModules.forEach((idx, position) => {
+    const base = parsePrice(isAnnual ? pricingModules[idx].priceAnnual : pricingModules[idx].price);
+    const disc = getPositionDiscount(position);
+    total += Math.round(base * (1 - disc / 100));
+  });
+
+  /* ─── checkout handler ─── */
+  const handleCheckout = async () => {
+    if (checkoutLoading) return;
+    setCheckoutLoading(true);
+    try {
+      const moduleIds = selectedModules.map((idx) => indexToModuleId[idx]);
+      const billing = isAnnual ? "annual" : "monthly";
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moduleIds, billing }),
+      });
+      if (res.status === 401) {
+        router.push("/signup");
+        return;
+      }
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      router.push("/signup");
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
 
   return (
     <section id="tarifs" className="relative py-16 sm:py-20 overflow-hidden">
@@ -339,10 +376,11 @@ export default function PricingSection() {
                         className="flex gap-2"
                       >
                         <button
-                          onClick={() => setDrawerOpen(true)}
-                          className="flex-1 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                          onClick={handleCheckout}
+                          disabled={checkoutLoading}
+                          className="flex-1 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                         >
-                          Paiement <ArrowRight className="w-4 h-4" />
+                          {checkoutLoading ? "..." : "Paiement"} <ArrowRight className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => removeModule(index)}
@@ -389,7 +427,7 @@ export default function PricingSection() {
           )}
         </AnimatePresence>
 
-        {/* ─── Open drawer CTA ─── */}
+        {/* ─── Checkout CTA bar ─── */}
         <AnimatePresence>
           {hasSelection && (
             <motion.div
@@ -400,8 +438,9 @@ export default function PricingSection() {
               className="mt-8 max-w-5xl mx-auto"
             >
               <button
-                onClick={() => setDrawerOpen(true)}
-                className="w-full rounded-xl bg-slate-900 p-5 flex items-center justify-between gap-4 hover:bg-slate-800 transition-colors group"
+                onClick={handleCheckout}
+                disabled={checkoutLoading}
+                className="w-full rounded-xl bg-slate-900 p-5 flex items-center justify-between gap-4 hover:bg-slate-800 transition-colors group disabled:opacity-70"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
@@ -421,6 +460,8 @@ export default function PricingSection() {
                   <div className="text-left">
                     <p className="text-sm font-bold text-white">
                       {allSelected ? "Pack Complet" : `${selectedModules.length} module${selectedModules.length > 1 ? "s" : ""} sélectionné${selectedModules.length > 1 ? "s" : ""}`}
+                      {" · "}
+                      <span className="text-orange-400">{total}€/mois</span>
                     </p>
                     {allSelected && (
                       <p className="text-xs text-green-400 font-medium">
@@ -430,8 +471,9 @@ export default function PricingSection() {
                     )}
                   </div>
                 </div>
-                <span className="text-sm font-bold text-orange-400 group-hover:text-orange-300 transition-colors">
-                  Voir ma sélection →
+                <span className="text-sm font-bold text-orange-400 group-hover:text-orange-300 transition-colors flex items-center gap-1.5">
+                  {checkoutLoading ? "Chargement..." : "Procéder au paiement"}
+                  <ArrowRight className="w-4 h-4" />
                 </span>
               </button>
             </motion.div>

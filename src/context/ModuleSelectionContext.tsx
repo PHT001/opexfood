@@ -10,8 +10,6 @@ interface ModuleSelectionContextType {
   resetModules: () => void;
   isAnnual: boolean;
   setIsAnnual: (v: boolean) => void;
-  drawerOpen: boolean;
-  setDrawerOpen: (v: boolean) => void;
   justAdded: number | null;
 }
 
@@ -20,7 +18,6 @@ const ModuleSelectionContext = createContext<ModuleSelectionContextType | null>(
 export function ModuleSelectionProvider({ children }: { children: React.ReactNode }) {
   const [selectedModules, setSelectedModules] = useState<number[]>([]);
   const [isAnnual, setIsAnnual] = useState(true);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [justAdded, setJustAdded] = useState<number | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -29,12 +26,8 @@ export function ModuleSelectionProvider({ children }: { children: React.ReactNod
       if (!selectedModules.includes(index)) {
         setSelectedModules((prev) => [...prev, index]);
         setJustAdded(index);
-        setDrawerOpen(true);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => setJustAdded(null), 1200);
-      } else {
-        // Already selected — just open drawer
-        setDrawerOpen(true);
       }
     },
     [selectedModules]
@@ -70,8 +63,6 @@ export function ModuleSelectionProvider({ children }: { children: React.ReactNod
         resetModules,
         isAnnual,
         setIsAnnual,
-        drawerOpen,
-        setDrawerOpen,
         justAdded,
       }}
     >
