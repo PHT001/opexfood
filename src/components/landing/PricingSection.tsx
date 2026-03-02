@@ -13,6 +13,9 @@ import {
   Phone,
   CheckCircle2,
   Sparkles,
+  Plus,
+  ArrowRight,
+  Trash2,
 } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,6 +57,8 @@ const indexToModuleId = ["chatbot", "fidelite", "agent_vocal"] as const;
 export default function PricingSection() {
   const {
     selectedModules,
+    addModule,
+    removeModule,
     toggleModule,
     isAnnual,
     setIsAnnual,
@@ -323,23 +328,43 @@ export default function PricingSection() {
 
                 {/* CTA — always full opacity */}
                 <div className="px-5 pb-5 md:px-6 md:pb-6">
-                  <button
-                    onClick={() => toggleModule(index)}
-                    className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                      isSelected
-                        ? "bg-green-50 border-2 border-green-400 text-green-700 hover:bg-green-100"
-                        : "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110"
-                    }`}
-                  >
+                  <AnimatePresence mode="wait">
                     {isSelected ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <CheckCircle2 className="w-4 h-4" />
-                        Sélectionné
-                      </span>
+                      <motion.div
+                        key="selected"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.2 }}
+                        className="flex gap-2"
+                      >
+                        <button
+                          onClick={() => setDrawerOpen(true)}
+                          className="flex-1 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                        >
+                          Paiement <ArrowRight className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => removeModule(index)}
+                          className="w-12 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </motion.div>
                     ) : (
-                      tier.cta
+                      <motion.button
+                        key="add"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => addModule(index)}
+                        className="w-full py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" /> Ajouter ce module
+                      </motion.button>
                     )}
-                  </button>
+                  </AnimatePresence>
                 </div>
               </div>
             );
