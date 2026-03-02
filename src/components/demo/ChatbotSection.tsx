@@ -108,20 +108,20 @@ export default function ChatbotSection() {
   return (
     <section id="step-chatbot" ref={sectionRef} className="relative py-10 sm:py-16 overflow-hidden">
       <Container>
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
-          <div className="reveal-left">
+          <div className="reveal-left min-w-0">
             {/* Module badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200 mb-5">
               <MessageSquareMore className="w-3.5 h-3.5 text-orange-600" />
               <span className="text-xs font-semibold text-orange-700">Module Chatbot + CRM</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-text">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
               Votre client commande en&nbsp;ligne
             </h2>
 
-            <p className="mt-4 text-lg text-text-secondary leading-relaxed">
+            <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               Thomas decouvre votre restaurant en ligne. En quelques messages, le chatbot IA prend sa commande
               — sans application, sans attente.
             </p>
@@ -134,8 +134,8 @@ export default function ChatbotSection() {
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-50">
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-50 shrink-0">
                       <Icon className="w-4 h-4 text-orange-600" />
                     </div>
                     <span className="text-sm text-text-secondary font-medium">{item.text}</span>
@@ -150,7 +150,7 @@ export default function ChatbotSection() {
           </div>
 
           {/* Phone mockup */}
-          <div className="reveal-right flex justify-center">
+          <div className="reveal-right flex justify-center max-w-full overflow-hidden">
             <PhoneMockup>
               {visibleMessages.map((msg) => (
                 <ChatBubble key={msg.id} message={msg} />

@@ -6,7 +6,7 @@ export default function DemoCTA() {
     <section className="py-24 sm:py-32 bg-white">
       <Container>
         <div className="flex flex-col items-center text-center">
-          <h2 className="reveal text-3xl sm:text-4xl lg:text-5xl font-bold text-text leading-tight">
+          <h2 className="reveal text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-text leading-tight">
             Convaincu ?
           </h2>
           <p className="reveal reveal-delay-1 mt-4 max-w-xl text-lg text-text-secondary leading-relaxed">

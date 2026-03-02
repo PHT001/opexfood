@@ -59,9 +59,9 @@ export default function DashboardSection() {
   return (
     <section id="step-2" ref={sectionRef} className="relative py-20 sm:py-28 bg-white overflow-hidden">
       <Container>
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Desktop mockup side */}
-          <div className="reveal-left lg:order-first flex justify-center">
+          <div className="reveal-left lg:order-first flex justify-center max-w-full overflow-hidden">
             <DesktopMockup>
               <div className="relative p-4">
                 {/* Stats */}
@@ -92,7 +92,7 @@ export default function DashboardSection() {
 
                 {/* Toast notification */}
                 {showToast && (
-                  <div className="absolute top-3 right-3 toast-slide-in bg-white border border-orange-200 rounded-xl shadow-soft-md px-4 py-3 flex items-center gap-3 z-10">
+                  <div className="absolute top-3 right-3 toast-slide-in bg-white border border-orange-200 rounded-xl shadow-soft-md px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 z-10 max-w-[calc(100%-24px)]">
                     <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center shrink-0">
                       <Bell className="w-4 h-4 text-orange-600" />
                     </div>
@@ -107,18 +107,18 @@ export default function DashboardSection() {
           </div>
 
           {/* Text side */}
-          <div className="reveal-right lg:order-last">
+          <div className="reveal-right lg:order-last min-w-0">
             {/* Module badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200 mb-5">
-              <LayoutDashboard className="w-3.5 h-3.5 text-orange-600" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200 mb-5 max-w-full flex-wrap">
+              <LayoutDashboard className="w-3.5 h-3.5 text-orange-600 shrink-0" />
               <span className="text-xs font-semibold text-orange-700">Votre CRM est offert avec le module Agent IA Vocal &amp; Chatbot</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-text">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
               Le restaurant reçoit la commande
             </h2>
 
-            <p className="mt-4 text-lg text-text-secondary leading-relaxed">
+            <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               Que la commande vienne du chatbot ou d&apos;un appel téléphonique,
               elle apparaît instantanément sur le tableau de bord —
               entièrement personnalisé à l&apos;identité de votre restaurant.
@@ -132,8 +132,8 @@ export default function DashboardSection() {
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50">
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 shrink-0">
                       <Icon className="w-4 h-4 text-emerald-600" />
                     </div>
                     <span className="text-sm text-text-secondary font-medium">{item.text}</span>

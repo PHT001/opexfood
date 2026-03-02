@@ -70,10 +70,10 @@ export default function DemoProgressLine() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const dotSize = isMobile ? 22 : 28;
-  const iconSize = isMobile ? 10 : 12;
-  const gap = isMobile ? 28 : 48;
-  const rightPos = isMobile ? 8 : 16;
+  const dotSize = isMobile ? 18 : 28;
+  const iconSize = isMobile ? 8 : 12;
+  const gap = isMobile ? 24 : 48;
+  const rightPos = isMobile ? 4 : 16;
 
   return (
     <div

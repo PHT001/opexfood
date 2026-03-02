@@ -54,20 +54,20 @@ export default function LoyaltySection() {
   return (
     <section id="step-3" ref={sectionRef} className="relative py-20 sm:py-28 bg-white overflow-hidden">
       <Container>
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
-          <div className="reveal-left">
+          <div className="reveal-left min-w-0">
             {/* Module badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 mb-5">
               <Gift className="w-3.5 h-3.5 text-violet-600" />
               <span className="text-xs font-semibold text-violet-700">Module Programme Fidélité</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-text">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
               Thomas gagne des points fidélité
             </h2>
 
-            <p className="mt-4 text-lg text-text-secondary leading-relaxed">
+            <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               En récupérant sa commande, Thomas tape son numéro sur la tablette au comptoir.
               Ses points s&apos;ajoutent automatiquement — avec une interface 100% aux couleurs
               de votre restaurant, pas un template générique.
@@ -81,8 +81,8 @@ export default function LoyaltySection() {
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-50">
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-50 shrink-0">
                       <Icon className="w-4 h-4 text-violet-600" />
                     </div>
                     <span className="text-sm text-text-secondary font-medium">{item.text}</span>
@@ -97,7 +97,7 @@ export default function LoyaltySection() {
           </div>
 
           {/* iPad mockup side — landscape */}
-          <div className="reveal flex justify-center lg:col-span-2 xl:col-span-1">
+          <div className="reveal flex justify-center lg:col-span-2 xl:col-span-1 max-w-full overflow-hidden">
             <TabletMockup>
               <div className="flex h-full">
                 {/* Left: NumPad */}

@@ -36,6 +36,7 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
 /* Gradients */
@@ -86,6 +87,7 @@ body {
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 /* Scroll reveal animations */
@@ -106,22 +108,25 @@ html {
 
 .reveal-left {
   opacity: 0;
-  transform: translateX(-40px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 .reveal-left.visible {
   opacity: 1;
-  transform: translateX(0);
 }
 
 .reveal-right {
   opacity: 0;
-  transform: translateX(40px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 .reveal-right.visible {
   opacity: 1;
-  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .reveal-left { transform: translateX(-40px); }
+  .reveal-left.visible { transform: translateX(0); }
+  .reveal-right { transform: translateX(40px); }
+  .reveal-right.visible { transform: translateX(0); }
 }
 
 .reveal-scale {

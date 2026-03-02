@@ -49,12 +49,12 @@ export default function PhaseHeader({ number, title, description, color, icon }:
         </div>
 
         {/* Title */}
-        <h2 className="reveal reveal-delay-1 text-3xl sm:text-4xl font-bold text-text">
+        <h2 className="reveal reveal-delay-1 text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
           {title}
         </h2>
 
         {/* Description */}
-        <p className="reveal reveal-delay-2 mt-3 text-lg text-text-secondary max-w-xl mx-auto">
+        <p className="reveal reveal-delay-2 mt-3 text-base sm:text-lg text-text-secondary max-w-xl mx-auto">
           {description}
         </p>
       </div>

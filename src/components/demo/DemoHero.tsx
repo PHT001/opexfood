@@ -16,7 +16,7 @@ export default function DemoHero() {
           </div>
 
           <h1
-            className="hero-fade mt-8 text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight"
+            className="hero-fade mt-8 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tight"
             style={{ animationDelay: "0.15s" }}
           >
             <span className="text-text">Vivez l&apos;experience</span>

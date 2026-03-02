@@ -234,20 +234,20 @@ export default function AgentSection() {
   return (
     <section id="step-agent" ref={sectionRef} className="relative py-10 sm:py-16 bg-white overflow-hidden">
       <Container>
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
-          <div className="reveal-right lg:order-last">
+          <div className="reveal-right lg:order-last min-w-0">
             {/* Module badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-5 max-w-full flex-wrap">
               <Phone className="w-3.5 h-3.5 text-emerald-600" />
               <span className="text-xs font-semibold text-emerald-700">Module Agent Receptionniste IA</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-text">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
               Ou il appelle, et l&apos;IA répond
             </h2>
 
-            <p className="mt-4 text-lg text-text-secondary leading-relaxed">
+            <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               Thomas préfère appeler ? L&apos;agent IA décroche en moins de 2 secondes,
               prend la réservation et la pré-commande — comme un vrai réceptionniste,
               disponible 24h/24.
@@ -261,8 +261,8 @@ export default function AgentSection() {
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50">
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 shrink-0">
                       <Icon className="w-4 h-4 text-emerald-600" />
                     </div>
                     <span className="text-sm text-text-secondary font-medium">{item.text}</span>
