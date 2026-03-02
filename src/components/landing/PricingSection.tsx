@@ -160,7 +160,7 @@ export default function PricingSection() {
         </div>
 
         {/* ─── 3 module cards — always same grid ─── */}
-        <div className="mt-10 grid grid-cols-3 gap-2 md:gap-6 max-w-5xl mx-auto items-stretch overflow-visible">
+        <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 max-w-5xl mx-auto items-stretch overflow-visible">
           {pricingModules.map((tier, index) => {
             const style = moduleStyles[index];
             const Icon = style.icon;
@@ -181,6 +181,8 @@ export default function PricingSection() {
               <div
                 key={tier.name}
                 className={`reveal reveal-delay-1 relative bg-white rounded-xl md:rounded-2xl flex flex-col overflow-visible ${
+                  index === pricingModules.length - 1 ? "col-span-2 md:col-span-1 max-w-[calc(50%-6px)] md:max-w-none mx-auto md:mx-0" : ""
+                } ${
                   isSelected
                     ? "border-2 border-green-400 shadow-[0_0_30px_rgba(34,197,94,0.15)]"
                     : showDiscount
@@ -205,7 +207,7 @@ export default function PricingSection() {
 
                 {/* FOMO badge — only when no selection on highlighted */}
                 {tier.highlighted && !hasSelection && (
-                  <div className="absolute -top-3 right-4 z-10 bg-slate-900 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md hidden md:flex items-center gap-1.5">
+                  <div className="absolute -top-3 right-4 z-10 bg-slate-900 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1.5">
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                     Choisi par{" "}
                     <span className="text-green-400">68%</span> de nos clients
@@ -220,7 +222,7 @@ export default function PricingSection() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute -top-3 left-4 z-10 bg-green-500 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md hidden md:flex items-center gap-1"
+                      className="absolute -top-3 left-4 z-10 bg-green-500 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md flex items-center gap-1"
                     >
                       <Sparkles className="w-3 h-3" />-{discountForAvailable}%
                     </motion.div>
@@ -237,8 +239,8 @@ export default function PricingSection() {
                       transition={{ duration: 0.3 }}
                       className="absolute top-3 right-3 z-10"
                     >
-                      <div className="w-5 h-5 md:w-8 md:h-8 rounded-full bg-green-500 flex items-center justify-center shadow-md">
-                        <Check className="w-3 h-3 md:w-5 md:h-5 text-white" />
+                      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shadow-md">
+                        <Check className="w-5 h-5 text-white" />
                       </div>
                     </motion.div>
                   )}
@@ -252,7 +254,7 @@ export default function PricingSection() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.25 }}
-                      className="absolute top-14 left-1/2 -translate-x-1/2 z-20 bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg hidden md:flex items-center gap-1.5"
+                      className="absolute top-14 left-1/2 -translate-x-1/2 z-20 bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       Ajouté !
@@ -262,57 +264,57 @@ export default function PricingSection() {
 
                 {/* Colored header */}
                 <div
-                  className={`relative bg-gradient-to-r ${style.gradient} px-2 py-2.5 md:px-6 md:py-5 flex flex-col md:flex-row items-center gap-1 md:gap-3 md:min-h-[88px] rounded-t-xl md:rounded-t-2xl transition-opacity duration-300 ${
+                  className={`relative bg-gradient-to-r ${style.gradient} px-3 py-3 md:px-6 md:py-5 flex items-center gap-2 md:gap-3 min-h-[60px] md:min-h-[88px] rounded-t-xl md:rounded-t-2xl transition-opacity duration-300 ${
                     isSelected ? "opacity-60" : ""
                   }`}
                 >
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                     <Icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                   </div>
-                  <div className="text-center md:text-left">
-                    <h3 className="text-[11px] md:text-lg font-bold text-white leading-tight">
+                  <div>
+                    <h3 className="text-xs md:text-lg font-bold text-white leading-tight">
                       {tier.name}
                     </h3>
-                    <p className="text-[9px] md:text-xs text-white/70 hidden md:block">{tier.subtitle}</p>
+                    <p className="text-[9px] md:text-xs text-white/70 hidden sm:block">{tier.subtitle}</p>
                   </div>
                 </div>
 
                 {/* Body */}
-                <div className={`p-2 md:p-6 flex flex-col flex-1 transition-opacity duration-300 ${isSelected ? "opacity-50" : ""}`}>
+                <div className={`p-3 md:p-6 flex flex-col flex-1 transition-opacity duration-300 ${isSelected ? "opacity-50" : ""}`}>
                   {/* Price */}
                   <div className="flex items-center gap-3">
                     <div className="flex items-baseline gap-1">
                       {showDiscount && (
-                        <span className="text-xs md:text-xl font-bold text-slate-300 line-through mr-1">
+                        <span className="text-sm md:text-xl font-bold text-slate-300 line-through mr-1">
                           {isAnnual ? tier.priceAnnual : tier.price}
                         </span>
                       )}
-                      <span className="text-xl md:text-4xl font-bold text-slate-900 transition-all duration-300">
+                      <span className="text-2xl md:text-4xl font-bold text-slate-900 transition-all duration-300">
                         {showDiscount
                           ? `${discountedPrice}€`
                           : isAnnual
                             ? tier.priceAnnual
                             : tier.price}
                       </span>
-                      <span className="text-[10px] md:text-base text-slate-400 font-medium">/mois</span>
+                      <span className="text-xs md:text-base text-slate-400 font-medium">/mois</span>
                     </div>
                   </div>
-                  <div className="h-0 md:h-5">
+                  <div className="h-5">
                     {isAnnual && (
-                      <p className="text-xs text-slate-400 mt-1 hidden md:block">
+                      <p className="text-[10px] md:text-xs text-slate-400 mt-1">
                         Facturé annuellement
                       </p>
                     )}
                   </div>
 
                   {/* Features */}
-                  <ul className="mt-5 space-y-2.5 flex-1 hidden md:block">
+                  <ul className="mt-3 md:mt-5 space-y-1.5 md:space-y-2.5 flex-1">
                     {tier.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
+                      <li key={i} className="flex items-start gap-1.5 md:gap-2.5">
                         <Check
-                          className={`w-4 h-4 ${style.checkColor} mt-0.5 shrink-0`}
+                          className={`w-3 h-3 md:w-4 md:h-4 ${style.checkColor} mt-0.5 shrink-0`}
                         />
-                        <span className="text-sm text-slate-600">
+                        <span className="text-[11px] md:text-sm text-slate-600 leading-tight">
                           {feature}
                         </span>
                       </li>
@@ -321,8 +323,8 @@ export default function PricingSection() {
 
                   {/* Setup */}
                   {tier.setup && (
-                    <div className="mt-4 rounded-lg bg-slate-50 px-3 py-2 hidden md:block">
-                      <span className="text-xs text-slate-400">
+                    <div className="mt-3 md:mt-4 rounded-lg bg-slate-50 px-2 py-1.5 md:px-3 md:py-2">
+                      <span className="text-[10px] md:text-xs text-slate-400">
                         {tier.setup}
                       </span>
                     </div>
@@ -330,26 +332,22 @@ export default function PricingSection() {
                 </div>
 
                 {/* CTA — always full opacity */}
-                <div className="px-2 pb-2 md:px-6 md:pb-6">
+                <div className="px-3 pb-3 md:px-6 md:pb-6">
                   <button
                     onClick={() => handleToggle(index)}
-                    className={`w-full py-1.5 md:py-3 rounded-lg md:rounded-xl text-[10px] md:text-sm font-bold transition-all duration-300 ${
+                    className={`w-full py-2 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 ${
                       isSelected
-                        ? "bg-green-50 border md:border-2 border-green-400 text-green-700 hover:bg-green-100"
+                        ? "bg-green-50 border-2 border-green-400 text-green-700 hover:bg-green-100"
                         : "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110"
                     }`}
                   >
                     {isSelected ? (
-                      <span className="flex items-center justify-center gap-1 md:gap-2">
-                        <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4" />
-                        <span className="hidden md:inline">Sélectionné</span>
-                        <span className="md:hidden">OK</span>
+                      <span className="flex items-center justify-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Sélectionné
                       </span>
                     ) : (
-                      <span>
-                        <span className="hidden md:inline">{tier.cta}</span>
-                        <span className="md:hidden">Choisir</span>
-                      </span>
+                      tier.cta
                     )}
                   </button>
                 </div>
