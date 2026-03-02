@@ -68,9 +68,8 @@ export default function LoyaltySection() {
             </h2>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
-              En récupérant sa commande, Thomas tape son numéro sur la tablette au comptoir.
-              Ses points s&apos;ajoutent automatiquement — avec une interface 100% aux couleurs
-              de votre restaurant, pas un template générique.
+              Le client tape son numéro, ses points s&apos;ajoutent <strong className="text-text font-semibold">automatiquement</strong> — interface{" "}
+              <strong className="text-text font-semibold">100% à votre image</strong>.
             </p>
 
             <div className="mt-8 space-y-4">

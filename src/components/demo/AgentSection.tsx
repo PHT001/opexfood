@@ -248,9 +248,8 @@ export default function AgentSection() {
             </h2>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
-              Thomas préfère appeler ? L&apos;agent IA décroche en moins de 2 secondes,
-              prend la réservation et la pré-commande — comme un vrai réceptionniste,
-              disponible 24h/24.
+              L&apos;agent IA décroche en <strong className="text-text font-semibold">moins de 2 secondes</strong>,
+              prend réservation et pré-commande — <strong className="text-text font-semibold">disponible 24h/24</strong>.
             </p>
 
             <div className="mt-8 space-y-4">

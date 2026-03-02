@@ -122,8 +122,8 @@ export default function ChatbotSection() {
             </h2>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
-              Thomas decouvre votre restaurant en ligne. En quelques messages, le chatbot IA prend sa commande
-              — sans application, sans attente.
+              En quelques messages, le <strong className="text-text font-semibold">chatbot</strong> prend la commande
+              — <strong className="text-text font-semibold">sans appli</strong>, <strong className="text-text font-semibold">sans attente</strong>.
             </p>
 
             <div className="mt-8 space-y-4">

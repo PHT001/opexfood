@@ -119,9 +119,8 @@ export default function DashboardSection() {
             </h2>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
-              Que la commande vienne du chatbot ou d&apos;un appel téléphonique,
-              elle apparaît instantanément sur le tableau de bord —
-              entièrement personnalisé à l&apos;identité de votre restaurant.
+              Chaque commande apparaît <strong className="text-text font-semibold">instantanément</strong> — tableau de bord{" "}
+              <strong className="text-text font-semibold">personnalisé</strong> aux couleurs de votre restaurant.
             </p>
 
             <div className="mt-8 space-y-4">

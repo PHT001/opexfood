@@ -1,8 +1,9 @@
 "use client";
 
 import { useRevealOnScroll } from "@/hooks/useRevealOnScroll";
-import { MessageSquareMore, LayoutDashboard, Gift } from "lucide-react";
+import { MessageSquareMore, LayoutDashboard, Gift, ArrowDown } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
+import Container from "@/components/ui/Container";
 import HeroSection from "@/components/landing/HeroSection";
 import UrgencySection from "@/components/landing/UrgencySection";
 import LogoBar from "@/components/landing/LogoBar";
@@ -39,13 +40,38 @@ export default function Home() {
           <ImpactStatsSection />
 
           {/* ============================================= */}
-          {/* DEMO INTERACTIVE — remplace ModuleShowcase    */}
+          {/* TRANSITION — La solution OpexFood             */}
+          {/* ============================================= */}
+          <div className="relative py-16 sm:py-20 bg-white">
+            <Container>
+              <div className="text-center max-w-2xl mx-auto">
+                <span className="reveal text-xs font-semibold uppercase tracking-widest text-orange-600">
+                  La solution
+                </span>
+                <h2 className="reveal reveal-delay-1 mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-text">
+                  <span className="text-slate-900">Opex</span>
+                  <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Food</span>
+                  {" "}en action
+                </h2>
+                <p className="reveal reveal-delay-2 mt-4 text-base sm:text-lg text-text-secondary">
+                  Découvrez comment notre plateforme transforme votre restaurant en{" "}
+                  <strong className="text-text font-semibold">3 étapes simples</strong>.
+                </p>
+                <div className="reveal reveal-delay-3 mt-6">
+                  <ArrowDown className="w-5 h-5 text-orange-300 mx-auto animate-bounce" />
+                </div>
+              </div>
+            </Container>
+          </div>
+
+          {/* ============================================= */}
+          {/* DEMO INTERACTIVE — modules                    */}
           {/* ============================================= */}
           <div id="modules">
             <PhaseHeader
               number="1"
               title="Acquisition Client"
-              description="Vos clients vous contactent par chatbot ou par téléphone — l'IA gère les deux canaux automatiquement."
+              description="L'IA gère chatbot et téléphone — deux canaux, zéro effort."
               color="orange"
               icon={<MessageSquareMore className="w-5 h-5 text-orange-600" />}
             />
@@ -54,7 +80,7 @@ export default function Home() {
 
             <TransitionBridge
               text="Et quand le client préfère appeler ?"
-              subtext="L'IA décroche aussi — un deuxième canal pour ne rater aucun client."
+              subtext="L'IA décroche aussi — un 2ème canal, zéro client perdu."
             />
 
             <AgentSection />
@@ -64,7 +90,7 @@ export default function Home() {
             <PhaseHeader
               number="2"
               title="CRM & Tableau de Bord"
-              description="Toutes les commandes arrivent au même endroit — chatbot ou téléphone, le restaurateur voit tout en temps réel."
+              description="Chatbot ou téléphone — toutes les commandes au même endroit, en temps réel."
               color="blue"
               icon={<LayoutDashboard className="w-5 h-5 text-blue-600" />}
             />
@@ -74,7 +100,7 @@ export default function Home() {
             <PhaseHeader
               number="3"
               title="Programme Fidélité"
-              description="Transformez les clients ponctuels en habitués — un programme de points simple et automatique."
+              description="Transformez chaque client en habitué — programme de points automatique."
               color="violet"
               icon={<Gift className="w-5 h-5 text-violet-600" />}
             />

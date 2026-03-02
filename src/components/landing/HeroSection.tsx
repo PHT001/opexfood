@@ -41,9 +41,7 @@ export default function HeroSection() {
             className="hero-fade mt-6 max-w-2xl text-lg sm:text-xl text-text-secondary leading-relaxed"
             style={{ animationDelay: "0.3s" }}
           >
-            <span className="font-semibold text-slate-900">Opex</span><span className="font-semibold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Food</span> réunit chatbot IA, fidélité, CRM et
-            outils de gestion dans une seule plateforme SaaS. Déjà
-            déployé dans +50 restaurants.
+            <strong className="text-slate-900">Chatbot IA</strong>, <strong className="text-slate-900">agent vocal</strong>, <strong className="text-slate-900">fidélité</strong> et <strong className="text-slate-900">CRM</strong> — tout dans une seule plateforme. Déjà adopté par <strong className="text-slate-900">+50 restaurants</strong>.
           </p>
 
           {/* CTAs */}

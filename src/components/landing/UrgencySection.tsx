@@ -28,9 +28,9 @@ export default function UrgencySection() {
 
           {/* description */}
           <p className="reveal reveal-delay-2 mt-5 text-base sm:text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
-            Vos clients commandent en ligne, comparent sur Google, réservent sur leur téléphone.
-            Un restaurant sans présence web et sans automatisation aujourd&apos;hui,
-            c&apos;est un restaurant qui perd des clients chaque jour.
+
+            Vos clients commandent <strong className="text-text font-semibold">en ligne</strong> et comparent sur Google.
+            Sans présence digitale, vous <strong className="text-text font-semibold">perdez des clients</strong> chaque jour.
           </p>
 
           {/* 3 stats */}
