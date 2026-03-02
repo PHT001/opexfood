@@ -60,7 +60,10 @@ export default function PricingSection() {
   const [selectedModules, setSelectedModules] = useState<number[]>([]);
   const [justAdded, setJustAdded] = useState<number | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [expandedCards, setExpandedCards] = useState<number[]>([]);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const MOBILE_VISIBLE_FEATURES = 3;
 
   useEffect(() => {
     return () => {
@@ -159,8 +162,8 @@ export default function PricingSection() {
           )}
         </div>
 
-        {/* ─── 3 module cards — always same grid ─── */}
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 max-w-5xl mx-auto items-stretch overflow-visible">
+        {/* ─── 3 module cards ─── */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-5xl mx-auto items-stretch overflow-visible">
           {pricingModules.map((tier, index) => {
             const style = moduleStyles[index];
             const Icon = style.icon;
@@ -180,9 +183,7 @@ export default function PricingSection() {
             return (
               <div
                 key={tier.name}
-                className={`reveal reveal-delay-1 relative bg-white rounded-xl md:rounded-2xl flex flex-col overflow-visible ${
-                  index === pricingModules.length - 1 ? "col-span-2 md:col-span-1 max-w-[calc(50%-6px)] md:max-w-none mx-auto md:mx-0" : ""
-                } ${
+                className={`reveal reveal-delay-1 relative bg-white rounded-2xl flex flex-col overflow-visible ${
                   isSelected
                     ? "border-2 border-green-400 shadow-[0_0_30px_rgba(34,197,94,0.15)]"
                     : showDiscount
@@ -264,67 +265,100 @@ export default function PricingSection() {
 
                 {/* Colored header */}
                 <div
-                  className={`relative bg-gradient-to-r ${style.gradient} px-3 py-3 md:px-6 md:py-5 flex items-center gap-2 md:gap-3 min-h-[60px] md:min-h-[88px] rounded-t-xl md:rounded-t-2xl transition-opacity duration-300 ${
+                  className={`relative bg-gradient-to-r ${style.gradient} px-5 py-4 md:px-6 md:py-5 flex items-center gap-3 rounded-t-2xl transition-opacity duration-300 ${
                     isSelected ? "opacity-60" : ""
                   }`}
                 >
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xs md:text-lg font-bold text-white leading-tight">
+                    <h3 className="text-base md:text-lg font-bold text-white leading-tight">
                       {tier.name}
                     </h3>
-                    <p className="text-[9px] md:text-xs text-white/70 hidden sm:block">{tier.subtitle}</p>
+                    <p className="text-xs text-white/70 mt-0.5">{tier.subtitle}</p>
                   </div>
                 </div>
 
                 {/* Body */}
-                <div className={`p-3 md:p-6 flex flex-col flex-1 transition-opacity duration-300 ${isSelected ? "opacity-50" : ""}`}>
+                <div className={`p-5 md:p-6 flex flex-col flex-1 transition-opacity duration-300 ${isSelected ? "opacity-50" : ""}`}>
                   {/* Price */}
                   <div className="flex items-center gap-3">
                     <div className="flex items-baseline gap-1">
                       {showDiscount && (
-                        <span className="text-sm md:text-xl font-bold text-slate-300 line-through mr-1">
+                        <span className="text-lg md:text-xl font-bold text-slate-300 line-through mr-1">
                           {isAnnual ? tier.priceAnnual : tier.price}
                         </span>
                       )}
-                      <span className="text-2xl md:text-4xl font-bold text-slate-900 transition-all duration-300">
+                      <span className="text-3xl md:text-4xl font-bold text-slate-900 transition-all duration-300">
                         {showDiscount
                           ? `${discountedPrice}€`
                           : isAnnual
                             ? tier.priceAnnual
                             : tier.price}
                       </span>
-                      <span className="text-xs md:text-base text-slate-400 font-medium">/mois</span>
+                      <span className="text-sm md:text-base text-slate-400 font-medium">/mois</span>
                     </div>
                   </div>
                   <div className="h-5">
                     {isAnnual && (
-                      <p className="text-[10px] md:text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-400 mt-1">
                         Facturé annuellement
                       </p>
                     )}
                   </div>
 
-                  {/* Features */}
-                  <ul className="mt-3 md:mt-5 space-y-1.5 md:space-y-2.5 flex-1">
-                    {tier.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-1.5 md:gap-2.5">
-                        <Check
-                          className={`w-3 h-3 md:w-4 md:h-4 ${style.checkColor} mt-0.5 shrink-0`}
-                        />
-                        <span className="text-[11px] md:text-sm text-slate-600 leading-tight">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Features — show first N on mobile, all on desktop */}
+                  {(() => {
+                    const isExpanded = expandedCards.includes(index);
+                    const hasMore = tier.features.length > MOBILE_VISIBLE_FEATURES;
+                    const hiddenCount = tier.features.length - MOBILE_VISIBLE_FEATURES;
+
+                    return (
+                      <>
+                        <ul className="mt-4 md:mt-5 space-y-2 md:space-y-2.5 flex-1">
+                          {tier.features.map((feature, i) => (
+                            <li
+                              key={i}
+                              className={`flex items-start gap-2.5 ${
+                                i >= MOBILE_VISIBLE_FEATURES && !isExpanded
+                                  ? "hidden md:flex"
+                                  : "flex"
+                              }`}
+                            >
+                              <Check
+                                className={`w-4 h-4 ${style.checkColor} mt-0.5 shrink-0`}
+                              />
+                              <span className="text-sm text-slate-600 leading-tight">
+                                {feature}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* "voir +" toggle — mobile only */}
+                        {hasMore && (
+                          <button
+                            onClick={() =>
+                              setExpandedCards((prev) =>
+                                prev.includes(index)
+                                  ? prev.filter((i) => i !== index)
+                                  : [...prev, index]
+                              )
+                            }
+                            className={`mt-2 text-xs font-semibold ${style.checkColor} hover:underline md:hidden`}
+                          >
+                            {isExpanded ? "voir moins ↑" : `voir + (${hiddenCount} avantages)`}
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()}
 
                   {/* Setup */}
                   {tier.setup && (
-                    <div className="mt-3 md:mt-4 rounded-lg bg-slate-50 px-2 py-1.5 md:px-3 md:py-2">
-                      <span className="text-[10px] md:text-xs text-slate-400">
+                    <div className="mt-4 rounded-lg bg-slate-50 px-3 py-2">
+                      <span className="text-xs text-slate-400">
                         {tier.setup}
                       </span>
                     </div>
@@ -332,10 +366,10 @@ export default function PricingSection() {
                 </div>
 
                 {/* CTA — always full opacity */}
-                <div className="px-3 pb-3 md:px-6 md:pb-6">
+                <div className="px-5 pb-5 md:px-6 md:pb-6">
                   <button
                     onClick={() => handleToggle(index)}
-                    className={`w-full py-2 md:py-3 rounded-xl text-xs md:text-sm font-bold transition-all duration-300 ${
+                    className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
                       isSelected
                         ? "bg-green-50 border-2 border-green-400 text-green-700 hover:bg-green-100"
                         : "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110"
