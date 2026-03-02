@@ -367,28 +367,22 @@ export default function PricingSection() {
                 <div className="px-5 pb-5 md:px-6 md:pb-6">
                   <AnimatePresence mode="wait">
                     {isSelected ? (
-                      <motion.div
+                      <motion.button
                         key="selected"
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.2 }}
-                        className="flex gap-2"
+                        onClick={() => removeModule(index)}
+                        className="w-full py-3 rounded-xl text-sm font-bold bg-green-50 border-2 border-green-400 text-green-700 flex items-center justify-center gap-2 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all group"
                       >
-                        <button
-                          onClick={handleCheckout}
-                          disabled={checkoutLoading}
-                          className="flex-1 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-                        >
-                          {checkoutLoading ? "..." : "Paiement"} <ArrowRight className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => removeModule(index)}
-                          className="w-12 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50 transition-all flex items-center justify-center"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </motion.div>
+                        <span className="flex items-center gap-2 group-hover:hidden">
+                          <CheckCircle2 className="w-4 h-4" /> Module sélectionné
+                        </span>
+                        <span className="hidden items-center gap-2 group-hover:flex">
+                          <Trash2 className="w-4 h-4" /> Retirer
+                        </span>
+                      </motion.button>
                     ) : (
                       <motion.button
                         key="add"
