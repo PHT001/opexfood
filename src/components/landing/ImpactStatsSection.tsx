@@ -220,7 +220,7 @@ function ImpactCard({
 
   return (
     <div
-      className="reveal bg-white rounded-2xl border border-slate-100 p-6 shadow-soft hover:shadow-soft-md hover:border-orange-200 transition-all duration-300"
+      className="reveal bg-white rounded-2xl border border-slate-100 p-4 sm:p-6 shadow-soft hover:shadow-soft-md hover:border-orange-200 transition-all duration-300"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex items-center justify-between mb-5">
@@ -235,7 +235,7 @@ function ImpactCard({
         {card.visual === "clock" && <ClockSaving inView={inView} />}
       </div>
       <div className="flex items-baseline gap-1">
-        <span className="text-4xl font-bold text-gradient-orange">
+        <span className="text-2xl sm:text-4xl font-bold text-gradient-orange">
           {card.prefix}{count}{card.suffix}
         </span>
       </div>
@@ -260,7 +260,7 @@ export default function ImpactStatsSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {cards.map((card, i) => (
             <ImpactCard key={card.title} card={card} index={i} inView={inView} />
           ))}

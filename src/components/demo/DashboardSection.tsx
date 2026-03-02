@@ -109,9 +109,9 @@ export default function DashboardSection() {
           {/* Text side */}
           <div className="reveal-right lg:order-last min-w-0">
             {/* Module badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200 mb-5 max-w-full flex-wrap">
-              <LayoutDashboard className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-              <span className="text-xs font-semibold text-orange-700">Votre CRM est offert avec le module Agent IA Vocal &amp; Chatbot</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-200 mb-5 max-w-full">
+              <LayoutDashboard className="w-4 h-4 text-orange-600 shrink-0" />
+              <span className="text-xs font-medium text-orange-700 leading-tight">Votre CRM est offert avec le module Agent IA Vocal &amp; Chatbot</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
