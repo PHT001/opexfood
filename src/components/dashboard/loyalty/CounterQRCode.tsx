@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { QrCode, Download, ExternalLink, Copy, Check } from "lucide-react";
 import { generateQRCodeDataURL, generateQRCodeSVG } from "@/lib/loyalty/barcode";
-import { getLoyaltyInscriptionURL } from "@/lib/loyalty/config";
 
 interface CounterQRCodeProps {
   slug: string;
@@ -13,9 +12,10 @@ export default function CounterQRCode({ slug }: CounterQRCodeProps) {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
-  const inscriptionUrl = getLoyaltyInscriptionURL(slug);
+  const inscriptionUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/loyalty/${slug}`;
 
   useEffect(() => {
+    if (!inscriptionUrl) return;
     generateQRCodeDataURL(inscriptionUrl, { width: 400 }).then(setQrDataUrl);
   }, [inscriptionUrl]);
 
