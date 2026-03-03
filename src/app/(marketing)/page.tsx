@@ -45,30 +45,30 @@ export default function Home() {
           {/* ============================================= */}
           {/* TRANSITION — La solution OpexFood             */}
           {/* ============================================= */}
-          <div className="relative py-20 sm:py-28 lg:py-32 bg-gradient-to-b from-white via-orange-50/60 to-white overflow-hidden">
-            {/* Decorative background elements */}
+          <div className="relative py-20 sm:py-28 lg:py-32 bg-slate-900 overflow-hidden">
+            {/* Decorative background */}
             <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-200/20 rounded-full blur-3xl" />
-              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-300/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-300/40 to-transparent" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px]" />
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-amber-500/5 rounded-full blur-[80px]" />
+              <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-orange-500/5 rounded-full blur-[80px]" />
             </div>
 
             <Container>
               <div className="relative text-center max-w-3xl mx-auto">
                 {/* Label pill */}
                 <div className="reveal flex justify-center mb-6 sm:mb-8">
-                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-600 bg-orange-100/80 px-4 py-2 rounded-full border border-orange-200/60">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-400 bg-orange-500/10 px-4 py-2 rounded-full border border-orange-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
                     La solution
                   </span>
                 </div>
 
                 {/* Main title */}
                 <h2 className="reveal reveal-delay-1 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
-                  <span className="text-slate-900">Opex</span>
-                  <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Food</span>
+                  <span className="text-white">Opex</span>
+                  <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Food</span>
                   <br className="sm:hidden" />
-                  <span className="text-slate-900">{" "}en action</span>
+                  <span className="text-white">{" "}en action</span>
                 </h2>
 
                 {/* Decorative line */}
@@ -77,14 +77,14 @@ export default function Home() {
                 </div>
 
                 {/* Subtitle */}
-                <p className="reveal reveal-delay-2 mt-6 sm:mt-8 text-lg sm:text-xl text-slate-500 max-w-xl mx-auto leading-relaxed">
+                <p className="reveal reveal-delay-2 mt-6 sm:mt-8 text-lg sm:text-xl text-slate-400 max-w-xl mx-auto leading-relaxed">
                   Découvrez comment notre plateforme transforme votre restaurant en{" "}
-                  <strong className="text-slate-800 font-semibold">3 étapes simples</strong>.
+                  <strong className="text-white font-semibold">3 étapes simples</strong>.
                 </p>
 
                 {/* Animated arrow */}
                 <div className="reveal reveal-delay-3 mt-8 sm:mt-10">
-                  <div className="w-10 h-10 mx-auto rounded-full border-2 border-orange-200 flex items-center justify-center">
+                  <div className="w-10 h-10 mx-auto rounded-full border-2 border-orange-500/30 flex items-center justify-center">
                     <ArrowDown className="w-5 h-5 text-orange-400 animate-bounce" />
                   </div>
                 </div>
