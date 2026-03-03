@@ -161,8 +161,10 @@ export default function PricingSection() {
         </div>
 
         {/* ─── 3 module cards ─── */}
+        {/* Display order: Chatbot (0), Agent IA (2), Fidélité (1) */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-5xl mx-auto items-stretch overflow-visible">
-          {pricingModules.map((tier, index) => {
+          {[0, 2, 1].map((index) => {
+            const tier = pricingModules[index];
             const style = moduleStyles[index];
             const Icon = style.icon;
             const isSelected = selectedModules.includes(index);
