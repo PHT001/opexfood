@@ -199,19 +199,20 @@ export default function AgentSection() {
   const [isActive, setIsActive] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [currentSpeaker, setCurrentSpeaker] = useState<"agent" | "client" | null>(null);
-  const [hasPlayed, setHasPlayed] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
-    if (hasPlayed) return;
+    if (hasStarted) return;
     const el = sectionRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasPlayed) {
-          setHasPlayed(true);
+        if (entry.isIntersecting && !hasStarted) {
+          setHasStarted(true);
           observer.disconnect();
           playSequence();
         }
@@ -222,7 +223,7 @@ export default function AgentSection() {
     observer.observe(el);
     return () => observer.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasPlayed]);
+  }, [hasStarted]);
 
   // Call duration timer
   useEffect(() => {
@@ -236,12 +237,33 @@ export default function AgentSection() {
     };
   }, [isActive]);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
+
   function playSequence() {
+    // Clear previous timeouts & timer
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    // Reset state
+    setVisibleLines([]);
+    setIsRinging(true);
+    setIsActive(false);
+    setCallDuration(0);
+    setCurrentSpeaker(null);
+
     // Ring for 2s
-    setTimeout(() => {
+    const t1 = setTimeout(() => {
       setIsRinging(false);
       setIsActive(true);
     }, 2000);
+    timeoutsRef.current.push(t1);
 
     // Play transcript lines with speaker tracking
     let delay = 2500;
@@ -249,21 +271,29 @@ export default function AgentSection() {
       const speakTime = line.speaker === "agent" ? 1400 : 1000;
       delay += speakTime;
       const d = delay;
-      // Set current speaker slightly before the line appears
-      setTimeout(() => {
+      const tSpeaker = setTimeout(() => {
         setCurrentSpeaker(line.speaker);
       }, d - speakTime + 200);
-      setTimeout(() => {
+      const tLine = setTimeout(() => {
         setVisibleLines((prev) => [...prev, CALL_TRANSCRIPT[i]]);
       }, d);
+      timeoutsRef.current.push(tSpeaker, tLine);
     });
 
     // End call
-    setTimeout(() => {
+    const endDelay = delay + 1500;
+    const tEnd = setTimeout(() => {
       setIsActive(false);
       setCurrentSpeaker(null);
       if (timerRef.current) clearInterval(timerRef.current);
-    }, delay + 1500);
+    }, endDelay);
+    timeoutsRef.current.push(tEnd);
+
+    // Loop: wait 2s after call ends, then replay
+    const tLoop = setTimeout(() => {
+      playSequence();
+    }, endDelay + 2000);
+    timeoutsRef.current.push(tLoop);
   }
 
   return (

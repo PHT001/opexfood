@@ -14,18 +14,19 @@ export default function LoyaltySection() {
   const isModuleSelected = selectedModules.includes(1);
   const [digitIndex, setDigitIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [hasPlayed, setHasPlayed] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
-    if (hasPlayed) return;
+    if (hasStarted) return;
     const el = sectionRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasPlayed) {
-          setHasPlayed(true);
+        if (entry.isIntersecting && !hasStarted) {
+          setHasStarted(true);
           observer.disconnect();
           playSequence();
         }
@@ -36,22 +37,44 @@ export default function LoyaltySection() {
     observer.observe(el);
     return () => observer.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasPlayed]);
+  }, [hasStarted]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => timeoutsRef.current.forEach(clearTimeout);
+  }, []);
 
   function playSequence() {
+    // Clear previous timeouts
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+
+    // Reset state
+    setDigitIndex(0);
+    setShowResult(false);
+
     const totalDigits = LOYALTY_DATA.phoneDigits.length;
 
     // Type each digit with 300ms interval
     for (let i = 0; i < totalDigits; i++) {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         setDigitIndex(i + 1);
       }, 800 + i * 300);
+      timeoutsRef.current.push(t);
     }
 
     // Show result 1s after last digit
-    setTimeout(() => {
+    const resultDelay = 800 + totalDigits * 300 + 1000;
+    const tResult = setTimeout(() => {
       setShowResult(true);
-    }, 800 + totalDigits * 300 + 1000);
+    }, resultDelay);
+    timeoutsRef.current.push(tResult);
+
+    // Loop: wait 2s after result, then replay
+    const tLoop = setTimeout(() => {
+      playSequence();
+    }, resultDelay + 2000);
+    timeoutsRef.current.push(tLoop);
   }
 
   return (

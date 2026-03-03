@@ -30,9 +30,10 @@ export default function ChatbotSection() {
   const isModuleSelected = selectedModules.includes(0);
   const [visibleMessages, setVisibleMessages] = useState<ChatMessage[]>([]);
   const [showTyping, setShowTyping] = useState(false);
-  const [hasPlayed, setHasPlayed] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   // Auto-scroll chat to bottom inside phone mockup only (not the page)
   useEffect(() => {
@@ -47,14 +48,14 @@ export default function ChatbotSection() {
 
   // Trigger animation sequence when section enters viewport
   useEffect(() => {
-    if (hasPlayed) return;
+    if (hasStarted) return;
     const el = sectionRef.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasPlayed) {
-          setHasPlayed(true);
+        if (entry.isIntersecting && !hasStarted) {
+          setHasStarted(true);
           observer.disconnect();
           playSequence();
         }
@@ -65,37 +66,43 @@ export default function ChatbotSection() {
     observer.observe(el);
     return () => observer.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasPlayed]);
+  }, [hasStarted]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => timeoutsRef.current.forEach(clearTimeout);
+  }, []);
 
   function playSequence() {
+    // Clear any previous timeouts
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+
+    // Reset state
+    setVisibleMessages([]);
+    setShowTyping(false);
+
     const delays = [
-      // msg 0 (bot): typing 800ms then show
       { typing: true, wait: 0 },
       { typing: false, msgIndex: 0, wait: 800 },
-      // msg 1 (user): pause 1200ms then show
       { typing: false, msgIndex: 1, wait: 1200 },
-      // msg 2 (bot menu-card): typing 800ms then show
       { typing: true, wait: 800 },
       { typing: false, msgIndex: 2, wait: 800 },
-      // msg 3 (user): pause 800ms
       { typing: false, msgIndex: 3, wait: 800 },
-      // msg 4 (bot order-summary): typing 800ms then show
       { typing: true, wait: 800 },
       { typing: false, msgIndex: 4, wait: 800 },
-      // msg 5 (user): pause 600ms
       { typing: false, msgIndex: 5, wait: 600 },
-      // msg 6 (bot confirmation): typing 800ms then show
       { typing: true, wait: 800 },
       { typing: false, msgIndex: 6, wait: 800 },
     ];
 
-    let totalDelay = 300; // Initial small delay after intersection
+    let totalDelay = 300;
 
     delays.forEach((step) => {
       totalDelay += step.wait;
       const d = totalDelay;
 
-      setTimeout(() => {
+      const t = setTimeout(() => {
         if (step.typing) {
           setShowTyping(true);
         } else {
@@ -105,7 +112,14 @@ export default function ChatbotSection() {
           }
         }
       }, d);
+      timeoutsRef.current.push(t);
     });
+
+    // Loop: wait 2s after last step, then replay
+    const loopTimeout = setTimeout(() => {
+      playSequence();
+    }, totalDelay + 2000);
+    timeoutsRef.current.push(loopTimeout);
   }
 
   return (
