@@ -95,7 +95,8 @@ export default function LoyaltySection() {
 
           {/* Text side — below */}
           <div className="reveal-left min-w-0 max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text flex items-center justify-center gap-3">
+              <span className="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-violet-500 text-white text-sm sm:text-base font-bold shrink-0">3</span>
               Programme Fidélité
             </h2>
 
