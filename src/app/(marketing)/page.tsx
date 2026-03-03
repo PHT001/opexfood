@@ -45,47 +45,31 @@ export default function Home() {
           {/* ============================================= */}
           {/* TRANSITION — La solution OpexFood             */}
           {/* ============================================= */}
-          <div className="relative py-20 sm:py-28 lg:py-32 bg-slate-900 overflow-hidden">
-            {/* Decorative background */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px]" />
-              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-amber-500/5 rounded-full blur-[80px]" />
-              <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-orange-500/5 rounded-full blur-[80px]" />
-            </div>
-
+          <div className="relative py-20 sm:py-28 lg:py-32 bg-white overflow-hidden">
             <Container>
               <div className="relative text-center max-w-3xl mx-auto">
-                {/* Label pill */}
-                <div className="reveal flex justify-center mb-6 sm:mb-8">
-                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-400 bg-orange-500/10 px-4 py-2 rounded-full border border-orange-500/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
-                    La solution
-                  </span>
-                </div>
-
-                {/* Main title */}
-                <h2 className="reveal reveal-delay-1 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
-                  <span className="text-white">Opex</span>
-                  <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">Food</span>
-                  <br className="sm:hidden" />
-                  <span className="text-white">{" "}en action</span>
-                </h2>
-
-                {/* Decorative line */}
-                <div className="reveal reveal-delay-1 mt-6 sm:mt-8 flex justify-center">
-                  <div className="w-16 h-1 rounded-full bg-gradient-to-r from-orange-400 to-amber-400" />
-                </div>
-
-                {/* Subtitle */}
-                <p className="reveal reveal-delay-2 mt-6 sm:mt-8 text-lg sm:text-xl text-slate-400 max-w-xl mx-auto leading-relaxed">
-                  Découvrez comment notre plateforme transforme votre restaurant en{" "}
-                  <strong className="text-white font-semibold">3 étapes simples</strong>.
+                {/* Eyebrow — "voici ce qu'on fait" */}
+                <p className="reveal text-sm sm:text-base font-medium text-slate-400 uppercase tracking-widest">
+                  Concrètement, comment ça marche ?
                 </p>
 
-                {/* Animated arrow */}
-                <div className="reveal reveal-delay-3 mt-8 sm:mt-10">
-                  <div className="w-10 h-10 mx-auto rounded-full border-2 border-orange-500/30 flex items-center justify-center">
-                    <ArrowDown className="w-5 h-5 text-orange-400 animate-bounce" />
+                {/* Main title */}
+                <h2 className="reveal reveal-delay-1 mt-5 sm:mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
+                  <span className="text-slate-900">On vous montre</span>
+                  <br />
+                  <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">en 3 étapes</span>
+                </h2>
+
+                {/* Subtitle */}
+                <p className="reveal reveal-delay-2 mt-5 sm:mt-6 text-base sm:text-lg text-slate-500 max-w-lg mx-auto leading-relaxed">
+                  Du premier message client jusqu&apos;au tableau de bord — découvrez{" "}
+                  <strong className="text-slate-800 font-semibold">OpexFood</strong> en action.
+                </p>
+
+                {/* Big animated arrow */}
+                <div className="reveal reveal-delay-3 mt-10 sm:mt-12 flex flex-col items-center gap-2">
+                  <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center animate-bounce">
+                    <ArrowDown className="w-6 h-6 text-orange-500" />
                   </div>
                 </div>
               </div>
