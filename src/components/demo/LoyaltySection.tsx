@@ -60,15 +60,14 @@ export default function LoyaltySection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
           <div className="reveal-left min-w-0">
-            {/* Module badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 mb-5">
-              <Gift className="w-3.5 h-3.5 text-violet-600" />
-              <span className="text-xs font-semibold text-violet-700">Module Programme Fidélité</span>
-            </div>
-
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
-              Thomas gagne des points fidélité
+              Programme Fidélité
             </h2>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 mt-3 mb-1">
+              <Gift className="w-3.5 h-3.5 text-violet-600" />
+              <span className="text-xs font-semibold text-violet-700">Vos clients gagnent des points automatiquement</span>
+            </div>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               Le client tape son numéro, ses points s&apos;ajoutent <strong className="text-text font-semibold">automatiquement</strong> — interface{" "}

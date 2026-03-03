@@ -272,15 +272,14 @@ export default function AgentSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
           <div className="reveal-right lg:order-last min-w-0">
-            {/* Module badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-5 max-w-full flex-wrap">
-              <Phone className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-xs font-semibold text-emerald-700">Module Agent Receptionniste IA</span>
-            </div>
-
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
-              Ou il appelle, et l&apos;IA répond
+              Agent Réceptionniste IA
             </h2>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mt-3 mb-1 max-w-full flex-wrap">
+              <Phone className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="text-xs font-semibold text-emerald-700">Ou il appelle, et l&apos;IA répond</span>
+            </div>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               L&apos;agent IA décroche en <strong className="text-text font-semibold">moins de 2 secondes</strong>,

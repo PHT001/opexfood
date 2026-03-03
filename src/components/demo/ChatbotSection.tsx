@@ -114,15 +114,14 @@ export default function ChatbotSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
           <div className="reveal-left min-w-0">
-            {/* Module badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200 mb-5">
-              <MessageSquareMore className="w-3.5 h-3.5 text-orange-600" />
-              <span className="text-xs font-semibold text-orange-700">Module Chatbot + CRM</span>
-            </div>
-
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
-              Votre client commande en&nbsp;ligne
+              Chatbot + CRM
             </h2>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200 mt-3 mb-1">
+              <MessageSquareMore className="w-3.5 h-3.5 text-orange-600" />
+              <span className="text-xs font-semibold text-orange-700">Votre client commande en ligne</span>
+            </div>
 
             <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
               En quelques messages, le <strong className="text-text font-semibold">chatbot</strong> prend la commande
