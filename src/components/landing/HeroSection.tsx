@@ -56,10 +56,52 @@ export default function HeroSection() {
             </a>
           </div>
 
+          {/* Social Proof — avatars + rating */}
+          <div
+            className="hero-fade mt-10 flex items-center justify-center gap-3"
+            style={{ animationDelay: "0.6s" }}
+          >
+            {/* Stacked avatars */}
+            <div className="flex -space-x-2.5">
+              {[
+                { initials: "M", bg: "bg-orange-500" },
+                { initials: "S", bg: "bg-emerald-500" },
+                { initials: "A", bg: "bg-violet-500" },
+                { initials: "L", bg: "bg-sky-500" },
+              ].map((a, i) => (
+                <div
+                  key={i}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full ${a.bg} flex items-center justify-center text-white text-xs sm:text-sm font-bold ring-2 ring-white`}
+                >
+                  {a.initials}
+                </div>
+              ))}
+            </div>
+
+            {/* Rating text */}
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-sm sm:text-base font-semibold text-slate-800">4.9/5</span>
+              <span className="text-xs sm:text-sm text-slate-500">de</span>
+              <span className="text-sm sm:text-base font-bold text-slate-800">1 783</span>
+              <span className="text-xs sm:text-sm text-slate-500">restaurateurs</span>
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" fill="#3B82F6" />
+                <path d="M8.5 12.5l2 2 5-5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+
           {/* Trust Bar */}
           <div
-            className="hero-fade mt-12 flex flex-wrap items-center justify-center gap-6 sm:gap-8"
-            style={{ animationDelay: "0.6s" }}
+            className="hero-fade mt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-8"
+            style={{ animationDelay: "0.75s" }}
           >
             {trustItems.map((item, index) => {
               const Icon = item.icon;
