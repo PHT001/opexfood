@@ -64,17 +64,17 @@ export default function HeroSection() {
             {/* Stacked avatars */}
             <div className="flex -space-x-2.5">
               {[
-                { initials: "M", bg: "bg-orange-500" },
-                { initials: "S", bg: "bg-emerald-500" },
-                { initials: "A", bg: "bg-violet-500" },
-                { initials: "L", bg: "bg-sky-500" },
-              ].map((a, i) => (
-                <div
+                "/avatars/avatar-1.jpg",
+                "/avatars/avatar-2.jpg",
+                "/avatars/avatar-3.jpg",
+                "/avatars/avatar-4.jpg",
+              ].map((src, i) => (
+                <img
                   key={i}
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full ${a.bg} flex items-center justify-center text-white text-xs sm:text-sm font-bold ring-2 ring-white`}
-                >
-                  {a.initials}
-                </div>
+                  src={src}
+                  alt="Client satisfait"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover ring-2 ring-white"
+                />
               ))}
             </div>
 
