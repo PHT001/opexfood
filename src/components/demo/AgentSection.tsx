@@ -1,26 +1,49 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Phone, PhoneIncoming, Clock, Users, ShoppingBag, Mic, Plus, CheckCircle2 } from "lucide-react";
+import { Phone, PhoneIncoming, Clock, Users, ShoppingBag, PhoneOff, Volume2, Plus, CheckCircle2 } from "lucide-react";
 import { useModuleSelection } from "@/context/ModuleSelectionContext";
 import Container from "@/components/ui/Container";
 import { CALL_TRANSCRIPT, CALL_STATS, type CallTranscriptLine } from "@/lib/demo-data";
 
+/* ─── Audio waveform bars ─── */
+function WaveformBars({ active, color = "emerald" }: { active: boolean; color?: string }) {
+  const barCount = 24;
+  const bgClass = color === "emerald" ? "bg-emerald-400" : "bg-slate-300";
+  return (
+    <div className="flex items-center justify-center gap-[2px] h-10">
+      {[...Array(barCount)].map((_, i) => (
+        <div
+          key={i}
+          className={`w-[2.5px] rounded-full transition-all ${active ? bgClass : "bg-slate-200"}`}
+          style={{
+            height: active ? `${6 + Math.random() * 28}px` : "4px",
+            animation: active ? `waveBar 0.6s ease-in-out ${i * 0.03}s infinite alternate` : "none",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Phone call UI ─── */
 function CallMockup({
   lines,
   isRinging,
   isActive,
   callDuration,
+  currentSpeaker,
 }: {
   lines: CallTranscriptLine[];
   isRinging: boolean;
   isActive: boolean;
   callDuration: number;
+  currentSpeaker: "agent" | "client" | null;
 }) {
-  const chatRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = chatRef.current;
+    const el = subtitleRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [lines]);
 
@@ -30,124 +53,127 @@ function CallMockup({
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
 
+  const lastLine = lines.length > 0 ? lines[lines.length - 1] : null;
+  const callEnded = !isRinging && !isActive && lines.length === CALL_TRANSCRIPT.length;
+
   return (
     <div className="relative mx-auto" style={{ width: 320, maxWidth: "90vw" }}>
-      <div className="relative bg-white rounded-2xl shadow-xl shadow-black/8 border border-slate-200/60 overflow-hidden">
-        {/* Header */}
-        <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-emerald-500 to-teal-600">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                {isRinging ? (
-                  <PhoneIncoming className="w-4 h-4 text-white animate-pulse" />
-                ) : (
-                  <Phone className="w-4 h-4 text-white" />
-                )}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white leading-none">
-                  {isRinging ? "Appel entrant..." : "Agent IA — Fresh Bowl"}
-                </p>
-                <span className="text-[10px] text-white/80">
-                  {isRinging
-                    ? "+33 6 12 34 56 78"
-                    : isActive
-                    ? `En cours — ${formatTime(callDuration)}`
-                    : "Appel termine"}
-                </span>
-              </div>
-            </div>
-            {isActive && (
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                <span className="text-[10px] text-white/80 font-medium">REC</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Ringing state */}
+      <div className="relative bg-slate-900 rounded-3xl shadow-xl shadow-black/15 overflow-hidden">
+        {/* ─── Ringing state ─── */}
         {isRinging && (
-          <div className="flex flex-col items-center justify-center py-16 gap-4">
+          <div className="flex flex-col items-center justify-center py-14 px-6 gap-5">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center">
-                <Phone className="w-8 h-8 text-emerald-600" />
+              <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <PhoneIncoming className="w-9 h-9 text-emerald-400" />
               </div>
-              <div className="absolute inset-0 rounded-full border-2 border-emerald-400/40 animate-ping" style={{ animationDuration: "1.5s" }} />
+              <div className="absolute inset-0 rounded-full border-2 border-emerald-400/30 animate-ping" style={{ animationDuration: "1.5s" }} />
+              <div className="absolute -inset-3 rounded-full border border-emerald-400/15 animate-ping" style={{ animationDuration: "2s" }} />
             </div>
-            <p className="text-sm font-medium text-slate-500">L&apos;agent IA décroche...</p>
+            <div className="text-center">
+              <p className="text-white font-semibold text-base">Appel entrant</p>
+              <p className="text-slate-400 text-sm mt-1">+33 6 12 34 56 78</p>
+            </div>
+            <div className="flex items-center gap-6 mt-2">
+              <div className="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center">
+                <PhoneOff className="w-6 h-6 text-red-400" />
+              </div>
+              <div className="w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center animate-pulse">
+                <Phone className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <p className="text-emerald-400 text-xs font-medium animate-pulse">L&apos;agent IA décroche...</p>
           </div>
         )}
 
-        {/* Transcript area */}
+        {/* ─── Active call / ended call ─── */}
         {!isRinging && (
-          <div ref={chatRef} className="px-3 py-3 space-y-2.5 overflow-hidden" style={{ height: 340 }}>
-            {/* Waveform indicator */}
-            {isActive && lines.length > 0 && (
-              <div className="flex items-center justify-center gap-1 py-2">
-                {[...Array(12)].map((_, i) => (
+          <div className="flex flex-col" style={{ height: 420 }}>
+            {/* Top: call info */}
+            <div className="text-center pt-6 pb-4 px-6">
+              <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-3">
+                <Phone className="w-7 h-7 text-emerald-400" />
+              </div>
+              <p className="text-white font-semibold text-base">Agent IA — Fresh Bowl</p>
+              <p className={`text-sm mt-1 ${isActive ? "text-emerald-400" : "text-slate-500"}`}>
+                {isActive ? formatTime(callDuration) : `Appel terminé · ${CALL_STATS.duration}`}
+              </p>
+            </div>
+
+            {/* Waveform */}
+            <div className="px-8 py-3">
+              <WaveformBars active={isActive && currentSpeaker !== null} />
+              {isActive && currentSpeaker && (
+                <p className="text-center text-[10px] text-slate-500 mt-1.5 font-medium">
+                  {currentSpeaker === "agent" ? "🤖 Agent IA parle..." : "🎤 Client parle..."}
+                </p>
+              )}
+            </div>
+
+            {/* Live subtitle area */}
+            <div ref={subtitleRef} className="flex-1 overflow-hidden px-5 pb-3">
+              <div className="space-y-2">
+                {lines.map((line) => (
                   <div
-                    key={i}
-                    className="w-[3px] rounded-full bg-emerald-400"
-                    style={{
-                      height: `${8 + Math.random() * 16}px`,
-                      animation: `waveBar 0.8s ease-in-out ${i * 0.05}s infinite alternate`,
-                    }}
-                  />
+                    key={line.id}
+                    className="animate-[fadeSlideUp_0.3s_ease-out]"
+                  >
+                    <div className={`rounded-xl px-3 py-2 ${
+                      line.speaker === "agent"
+                        ? "bg-emerald-500/10 border border-emerald-500/20"
+                        : "bg-white/5 border border-white/10"
+                    }`}>
+                      <span className={`text-[10px] font-bold block mb-0.5 ${
+                        line.speaker === "agent" ? "text-emerald-400" : "text-slate-400"
+                      }`}>
+                        {line.speaker === "agent" ? "🤖 Agent IA" : "👤 Client"}
+                      </span>
+                      <p className={`text-[12px] leading-relaxed ${
+                        line.speaker === "agent" ? "text-emerald-100" : "text-slate-300"
+                      }`}>
+                        {line.text}
+                      </p>
+                    </div>
+                  </div>
                 ))}
               </div>
-            )}
 
-            {lines.map((line) => (
-              <div
-                key={line.id}
-                className={`flex ${line.speaker === "client" ? "justify-end" : "justify-start"} animate-[fadeSlideUp_0.3s_ease-out]`}
-              >
-                <div className="flex items-start gap-2 max-w-[85%]">
-                  {line.speaker === "agent" && (
-                    <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-                      <Mic className="w-3 h-3 text-emerald-600" />
+              {/* Call summary */}
+              {callEnded && (
+                <div className="animate-[fadeSlideUp_0.4s_ease-out] mt-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3">
+                  <p className="text-[11px] font-bold text-emerald-400 mb-2">📋 Résumé de l&apos;appel</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-emerald-500" />
+                      <span className="text-[10px] text-slate-400">{CALL_STATS.duration}</span>
                     </div>
-                  )}
-                  <div>
-                    <span className="text-[10px] font-medium text-slate-400 mb-0.5 block">
-                      {line.speaker === "agent" ? "Agent IA" : "Client"}
-                    </span>
-                    <div
-                      className={`px-3 py-2 text-[12px] leading-relaxed rounded-2xl ${
-                        line.speaker === "client"
-                          ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-br-sm"
-                          : "bg-slate-100 text-slate-700 rounded-bl-sm"
-                      }`}
-                    >
-                      {line.text}
+                    <div className="flex items-center gap-1.5">
+                      <Users className="w-3 h-3 text-emerald-500" />
+                      <span className="text-[10px] text-slate-400">{CALL_STATS.couverts} couverts</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Phone className="w-3 h-3 text-emerald-500" />
+                      <span className="text-[10px] text-slate-400">{CALL_STATS.reservation}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <ShoppingBag className="w-3 h-3 text-emerald-500" />
+                      <span className="text-[10px] text-slate-400">{CALL_STATS.preCommande}</span>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
 
-            {/* Call summary card */}
-            {!isActive && lines.length === CALL_TRANSCRIPT.length && (
-              <div className="animate-[fadeSlideUp_0.4s_ease-out] mt-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-3">
-                <p className="text-[11px] font-bold text-emerald-700 mb-2">Résumé de l&apos;appel</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3 h-3 text-emerald-500" />
-                    <span className="text-[10px] text-slate-600">{CALL_STATS.duration}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Users className="w-3 h-3 text-emerald-500" />
-                    <span className="text-[10px] text-slate-600">{CALL_STATS.couverts} couverts</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Phone className="w-3 h-3 text-emerald-500" />
-                    <span className="text-[10px] text-slate-600">{CALL_STATS.reservation}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <ShoppingBag className="w-3 h-3 text-emerald-500" />
-                    <span className="text-[10px] text-slate-600">{CALL_STATS.preCommande}</span>
-                  </div>
+            {/* Bottom: call controls */}
+            {isActive && (
+              <div className="px-6 pb-5 pt-2 flex items-center justify-center gap-5">
+                <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
+                  <Volume2 className="w-5 h-5 text-white" />
+                </div>
+                <div className="w-14 h-14 rounded-full bg-red-500 flex items-center justify-center">
+                  <PhoneOff className="w-6 h-6 text-white" />
+                </div>
+                <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-white">HP</span>
                 </div>
               </div>
             )}
@@ -158,7 +184,7 @@ function CallMockup({
       <style>{`
         @keyframes waveBar {
           0% { height: 4px; }
-          100% { height: 20px; }
+          100% { height: 28px; }
         }
       `}</style>
     </div>
@@ -172,6 +198,7 @@ export default function AgentSection() {
   const [isRinging, setIsRinging] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
+  const [currentSpeaker, setCurrentSpeaker] = useState<"agent" | "client" | null>(null);
   const [hasPlayed, setHasPlayed] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -216,12 +243,16 @@ export default function AgentSection() {
       setIsActive(true);
     }, 2000);
 
-    // Play transcript lines
+    // Play transcript lines with speaker tracking
     let delay = 2500;
     CALL_TRANSCRIPT.forEach((line, i) => {
-      const speakTime = line.speaker === "agent" ? 1200 : 800;
+      const speakTime = line.speaker === "agent" ? 1400 : 1000;
       delay += speakTime;
       const d = delay;
+      // Set current speaker slightly before the line appears
+      setTimeout(() => {
+        setCurrentSpeaker(line.speaker);
+      }, d - speakTime + 200);
       setTimeout(() => {
         setVisibleLines((prev) => [...prev, CALL_TRANSCRIPT[i]]);
       }, d);
@@ -230,6 +261,7 @@ export default function AgentSection() {
     // End call
     setTimeout(() => {
       setIsActive(false);
+      setCurrentSpeaker(null);
       if (timerRef.current) clearInterval(timerRef.current);
     }, delay + 1500);
   }
@@ -296,11 +328,11 @@ export default function AgentSection() {
               isRinging={isRinging}
               isActive={isActive}
               callDuration={callDuration}
+              currentSpeaker={currentSpeaker}
             />
           </div>
         </div>
       </Container>
-
     </section>
   );
 }
