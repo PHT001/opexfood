@@ -57,59 +57,9 @@ export default function LoyaltySection() {
   return (
     <section id="step-3" ref={sectionRef} className="relative py-20 sm:py-28 bg-white overflow-hidden">
       <Container>
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
-          {/* Text side */}
-          <div className="reveal-left min-w-0">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
-              Programme Fidélité
-            </h2>
-
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 mt-3 mb-1">
-              <Gift className="w-3.5 h-3.5 text-violet-600" />
-              <span className="text-xs font-semibold text-violet-700">Vos clients gagnent des points automatiquement</span>
-            </div>
-
-            <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
-              Le client tape son numéro, ses points s&apos;ajoutent <strong className="text-text font-semibold">automatiquement</strong> — interface{" "}
-              <strong className="text-text font-semibold">100% à votre image</strong>.
-            </p>
-
-            <div className="mt-8 space-y-4">
-              {[
-                { icon: Smartphone, text: "Saisie rapide par numéro de téléphone" },
-                { icon: Trophy, text: "Récompenses et paliers personnalisés à votre image" },
-                { icon: Heart, text: "Interface adaptée à votre identité visuelle" },
-              ].map((item, i) => {
-                const Icon = item.icon;
-                return (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-50 shrink-0">
-                      <Icon className="w-4 h-4 text-violet-600" />
-                    </div>
-                    <span className="text-sm text-text-secondary font-medium">{item.text}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <button
-              onClick={() => addModule(1)}
-              className={`inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
-                isModuleSelected
-                  ? "bg-green-50 border border-green-300 text-green-700"
-                  : "bg-violet-50 border border-violet-200 text-violet-700 hover:bg-violet-100 hover:border-violet-300"
-              }`}
-            >
-              {isModuleSelected ? (
-                <><CheckCircle2 className="w-4 h-4" /> Module ajouté</>
-              ) : (
-                <><Plus className="w-4 h-4" /> Ajouter ce module</>
-              )}
-            </button>
-          </div>
-
-          {/* iPad mockup side — landscape */}
-          <div className="reveal flex justify-center lg:col-span-2 xl:col-span-1 max-w-full overflow-hidden">
+        <div className="flex flex-col gap-12 lg:gap-16 items-center overflow-hidden">
+          {/* iPad mockup — on top */}
+          <div className="reveal flex justify-center w-full max-w-full overflow-hidden">
             <TabletMockup>
               <div className="flex h-full">
                 {/* Left: NumPad */}
@@ -141,6 +91,58 @@ export default function LoyaltySection() {
                 </div>
               </div>
             </TabletMockup>
+          </div>
+
+          {/* Text side — below */}
+          <div className="reveal-left min-w-0 max-w-2xl mx-auto text-center">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text">
+              Programme Fidélité
+            </h2>
+
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 mt-3 mb-1">
+              <Gift className="w-3.5 h-3.5 text-violet-600" />
+              <span className="text-xs font-semibold text-violet-700">Vos clients gagnent des points automatiquement</span>
+            </div>
+
+            <p className="mt-4 text-base sm:text-lg text-text-secondary leading-relaxed">
+              Le client tape son numéro, ses points s&apos;ajoutent <strong className="text-text font-semibold">automatiquement</strong> — interface{" "}
+              <strong className="text-text font-semibold">100% à votre image</strong>.
+            </p>
+
+            <div className="mt-8 inline-flex flex-col gap-4 text-left">
+              {[
+                { icon: Smartphone, text: "Saisie rapide par numéro de téléphone" },
+                { icon: Trophy, text: "Récompenses et paliers personnalisés à votre image" },
+                { icon: Heart, text: "Interface adaptée à votre identité visuelle" },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-violet-50 shrink-0">
+                      <Icon className="w-4 h-4 text-violet-600" />
+                    </div>
+                    <span className="text-sm text-text-secondary font-medium">{item.text}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-8">
+              <button
+                onClick={() => addModule(1)}
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  isModuleSelected
+                    ? "bg-green-50 border border-green-300 text-green-700"
+                    : "bg-violet-50 border border-violet-200 text-violet-700 hover:bg-violet-100 hover:border-violet-300"
+                }`}
+              >
+                {isModuleSelected ? (
+                  <><CheckCircle2 className="w-4 h-4" /> Module ajouté</>
+                ) : (
+                  <><Plus className="w-4 h-4" /> Ajouter ce module</>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </Container>
