@@ -203,6 +203,8 @@ export interface Client {
   visits: number;
   lastVisit: string;
   totalSpent: number;
+  barcode?: string;
+  passType?: "apple" | "google" | "pwa" | null;
 }
 
 export const mockClients: Client[] = [

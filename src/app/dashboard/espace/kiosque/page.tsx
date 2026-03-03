@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Smartphone,
-  QrCode,
   Gift,
   Star,
   ArrowLeft,
@@ -14,6 +13,9 @@ import {
 import { cn } from "@/lib/utils";
 import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 import { mockClients, loyaltyConfig } from "@/lib/dashboard/crm-data";
+import { mockLoyaltyConfig } from "@/lib/loyalty/mock-data";
+import CounterQRCode from "@/components/dashboard/loyalty/CounterQRCode";
+import LoyaltyConfigForm from "@/components/dashboard/loyalty/LoyaltyConfigForm";
 
 type KiosqueStep = "phone" | "confirm" | "success";
 
@@ -316,61 +318,15 @@ export default function KiosquePage() {
 
         {/* Right: Config & QR */}
         <div className="space-y-6">
-          {/* QR Code section */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <QrCode className="w-4 h-4 text-slate-400" />
-              <h3 className="text-sm font-semibold text-slate-900">
-                QR Code Comptoir
-              </h3>
-            </div>
-            <p className="text-sm text-slate-500 mb-4">
-              Imprimez ce QR code et placez-le sur votre comptoir. Vos clients
-              peuvent scanner pour accéder au programme fidélité directement.
-            </p>
-            <div className="bg-slate-50 rounded-xl p-8 flex items-center justify-center">
-              <div className="w-40 h-40 bg-white rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center">
-                <div className="text-center">
-                  <QrCode className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-slate-400">QR Code</p>
-                  <p className="text-xs text-slate-400">généré à la config</p>
-                </div>
-              </div>
-            </div>
-            <button className="mt-4 w-full py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-medium text-slate-700 transition-colors">
-              Télécharger le QR Code
-            </button>
-          </div>
-
-          {/* Loyalty config summary */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <h3 className="text-sm font-semibold text-slate-900 mb-4">
-              Configuration fidélité
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                <span className="text-sm text-slate-500">Points par euro</span>
-                <span className="text-sm font-semibold text-slate-900">
-                  {loyaltyConfig.pointsPerEuro} pts/€
-                </span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                <span className="text-sm text-slate-500">Seuil récompense</span>
-                <span className="text-sm font-semibold text-slate-900">
-                  {loyaltyConfig.rewardThreshold} pts
-                </span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-sm text-slate-500">Récompense</span>
-                <span className="text-sm font-semibold text-orange-600">
-                  {loyaltyConfig.rewardDescription}
-                </span>
-              </div>
-            </div>
-            <button className="mt-4 w-full py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-sm font-medium text-slate-700 transition-colors">
-              Modifier la configuration
-            </button>
-          </div>
+          <CounterQRCode slug={mockLoyaltyConfig.slug} />
+          <LoyaltyConfigForm
+            initialConfig={{
+              points_per_euro: mockLoyaltyConfig.points_per_euro,
+              reward_threshold: mockLoyaltyConfig.reward_threshold,
+              reward_description: mockLoyaltyConfig.reward_description,
+              welcome_points: mockLoyaltyConfig.welcome_points,
+            }}
+          />
         </div>
       </div>
     </div>
