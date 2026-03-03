@@ -114,8 +114,11 @@ export default function ChatbotSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center overflow-hidden">
           {/* Text side */}
           <div className="reveal-left min-w-0">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-500 text-white text-sm sm:text-base font-bold shrink-0">1</span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text flex items-center gap-4">
+              <span className="relative inline-flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 shrink-0">
+                <span className="absolute inset-0 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg shadow-orange-500/25 rotate-3" />
+                <span className="relative text-white text-base sm:text-lg font-extrabold">1</span>
+              </span>
               Chatbot + CRM
             </h2>
 
