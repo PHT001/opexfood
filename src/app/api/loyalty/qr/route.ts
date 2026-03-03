@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const url = getLoyaltyInscriptionURL(slug);
     const buffer = await generateQRCodeBuffer(url, { width: 800 });
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "image/png",
         "Cache-Control": "public, max-age=3600",
