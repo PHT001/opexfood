@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Users,
   Search,
@@ -9,30 +9,49 @@ import {
   Gift,
   ChevronDown,
   ChevronUp,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
-import { mockClients, loyaltyConfig, type Client } from "@/lib/dashboard/crm-data";
+import type { LoyaltyClient, LoyaltyConfig } from "@/lib/loyalty/types";
 
-type SortKey = "name" | "points" | "visits" | "totalSpent";
+type SortKey = "name" | "points" | "total_visits" | "total_spent";
 
 export default function ClientsPage() {
   const { theme } = useRestaurantTheme();
+  const [clients, setClients] = useState<LoyaltyClient[]>([]);
+  const [config, setConfig] = useState<LoyaltyConfig | null>(null);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("points");
   const [sortAsc, setSortAsc] = useState(false);
 
-  const totalPoints = mockClients.reduce((s, c) => s + c.points, 0);
+  useEffect(() => {
+    fetch("/api/loyalty/clients")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.clients) setClients(data.clients);
+        if (data.config) setConfig(data.config);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const rewardThreshold = config?.reward_threshold ?? 500;
+  const pointsPerEuro = config?.points_per_euro ?? 10;
+  const rewardDescription = config?.reward_description ?? "1 Bowl offert";
+
+  const totalPoints = clients.reduce((s, c) => s + c.points, 0);
   const avgVisits =
-    mockClients.length > 0
-      ? mockClients.reduce((s, c) => s + c.visits, 0) / mockClients.length
+    clients.length > 0
+      ? clients.reduce((s, c) => s + c.total_visits, 0) / clients.length
       : 0;
-  const totalRevenue = mockClients.reduce((s, c) => s + c.totalSpent, 0);
+  const totalRevenue = clients.reduce((s, c) => s + Number(c.total_spent), 0);
 
   const stats = [
     {
       label: "Clients inscrits",
-      value: mockClients.length.toString(),
+      value: clients.length.toString(),
       icon: Users,
       color: "text-blue-600",
       bg: "bg-blue-50",
@@ -60,12 +79,12 @@ export default function ClientsPage() {
     },
   ];
 
-  const filtered = mockClients
+  const filtered = clients
     .filter(
       (c) =>
         c.name.toLowerCase().includes(search.toLowerCase()) ||
         c.phone.includes(search) ||
-        c.email.toLowerCase().includes(search.toLowerCase())
+        (c.email ?? "").toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       const aVal = a[sortKey];
@@ -74,8 +93,8 @@ export default function ClientsPage() {
         return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
       return sortAsc
-        ? (aVal as number) - (bVal as number)
-        : (bVal as number) - (aVal as number);
+        ? (Number(aVal) || 0) - (Number(bVal) || 0)
+        : (Number(bVal) || 0) - (Number(aVal) || 0);
     });
 
   const handleSort = (key: SortKey) => {
@@ -96,6 +115,19 @@ export default function ClientsPage() {
     );
   };
 
+  const formatDate = (iso: string | null) => {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleDateString("fr-FR");
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -103,7 +135,8 @@ export default function ClientsPage() {
           Clients & Fidélité
         </h2>
         <p className="text-sm text-slate-500 mt-0.5">
-          Gérez vos clients et leur programme de fidélité ({loyaltyConfig.pointsPerEuro} pts/€ — {loyaltyConfig.rewardDescription} à {loyaltyConfig.rewardThreshold} pts)
+          Gérez vos clients et leur programme de fidélité ({pointsPerEuro}{" "}
+          pts/€ — {rewardDescription} à {rewardThreshold} pts)
         </p>
       </div>
 
@@ -144,7 +177,9 @@ export default function ClientsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400"
-              style={{ "--tw-ring-color": theme.primaryLight } as React.CSSProperties}
+              style={
+                { "--tw-ring-color": theme.primaryLight } as React.CSSProperties
+              }
             />
           </div>
         </div>
@@ -176,20 +211,20 @@ export default function ClientsPage() {
                 </th>
                 <th className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
                   <button
-                    onClick={() => handleSort("visits")}
+                    onClick={() => handleSort("total_visits")}
                     className="hover:text-slate-700"
                   >
                     Visites
-                    <SortIcon col="visits" />
+                    <SortIcon col="total_visits" />
                   </button>
                 </th>
                 <th className="text-right text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
                   <button
-                    onClick={() => handleSort("totalSpent")}
+                    onClick={() => handleSort("total_spent")}
                     className="hover:text-slate-700"
                   >
                     Total dépensé
-                    <SortIcon col="totalSpent" />
+                    <SortIcon col="total_spent" />
                   </button>
                 </th>
                 <th className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
@@ -200,10 +235,10 @@ export default function ClientsPage() {
             <tbody>
               {filtered.map((client) => {
                 const progress = Math.min(
-                  (client.points / loyaltyConfig.rewardThreshold) * 100,
+                  (client.points / rewardThreshold) * 100,
                   100
                 );
-                const nearReward = client.points >= loyaltyConfig.rewardThreshold;
+                const nearReward = client.points >= rewardThreshold;
                 return (
                   <tr
                     key={client.id}
@@ -215,7 +250,10 @@ export default function ClientsPage() {
                           className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
                           style={{ backgroundColor: theme.primaryLight }}
                         >
-                          <span className="text-xs font-bold" style={{ color: theme.primaryDark }}>
+                          <span
+                            className="text-xs font-bold"
+                            style={{ color: theme.primaryDark }}
+                          >
                             {client.name
                               .split(" ")
                               .map((n) => n[0])
@@ -229,16 +267,16 @@ export default function ClientsPage() {
                     </td>
                     <td className="px-6 py-3">
                       <p className="text-sm text-slate-700">{client.phone}</p>
-                      <p className="text-xs text-slate-400">{client.email}</p>
+                      <p className="text-xs text-slate-400">
+                        {client.email ?? "—"}
+                      </p>
                     </td>
                     <td className="px-6 py-3">
                       <div className="flex flex-col items-center gap-1">
                         <span
                           className={cn(
                             "text-sm font-bold",
-                            nearReward
-                              ? "text-green-600"
-                              : "text-slate-900"
+                            nearReward ? "text-green-600" : "text-slate-900"
                           )}
                         >
                           {client.points}
@@ -250,7 +288,9 @@ export default function ClientsPage() {
                           <div
                             className="h-full rounded-full"
                             style={{
-                              backgroundColor: nearReward ? "#4ade80" : theme.primary,
+                              backgroundColor: nearReward
+                                ? "#4ade80"
+                                : theme.primary,
                               width: `${progress}%`,
                             }}
                           />
@@ -259,17 +299,17 @@ export default function ClientsPage() {
                     </td>
                     <td className="px-6 py-3 text-center">
                       <span className="text-sm font-semibold text-slate-900">
-                        {client.visits}
+                        {client.total_visits}
                       </span>
                     </td>
                     <td className="px-6 py-3 text-right">
                       <span className="text-sm font-semibold text-slate-900">
-                        {client.totalSpent.toFixed(1)} €
+                        {Number(client.total_spent).toFixed(1)} €
                       </span>
                     </td>
                     <td className="px-6 py-3 text-center">
                       <span className="text-sm text-slate-500">
-                        {client.lastVisit}
+                        {formatDate(client.last_visit_at)}
                       </span>
                     </td>
                   </tr>

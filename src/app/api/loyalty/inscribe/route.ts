@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateBarcode, normalizePhone } from "@/lib/loyalty/barcode";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import {
-  mockLoyaltyClients,
-  mockLoyaltyConfig,
-  mockLoyaltyTransactions,
-} from "@/lib/loyalty/mock-data";
-import type { LoyaltyClient, LoyaltyTransaction } from "@/lib/loyalty/types";
-import { LOYALTY_DEFAULTS } from "@/lib/loyalty/config";
+  getConfigBySlug,
+  getClientByPhone,
+  createClient,
+  createTransaction,
+} from "@/lib/loyalty/queries";
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,9 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if config exists for this slug
-    // TODO: Replace with Supabase query
-    const config = mockLoyaltyConfig.slug === slug ? mockLoyaltyConfig : null;
+    const config = await getConfigBySlug(supabaseAdmin, slug);
     if (!config) {
       return NextResponse.json(
         { error: "Restaurant non trouvé" },
@@ -37,22 +35,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if client already exists for this restaurant + phone
-    // TODO: Replace with Supabase query
-    const existing = mockLoyaltyClients.find(
-      (c) => c.phone === normalizedPhone && c.restaurant_id === config.restaurant_id
+    // Check if client already exists
+    const existing = await getClientByPhone(
+      supabaseAdmin,
+      config.restaurant_id,
+      normalizedPhone
     );
     if (existing) {
-      // Return existing client (re-inscription)
       return NextResponse.json({ client: existing, existing: true });
     }
 
     // Create new client
     const barcode = generateBarcode(slug);
-    const welcomePoints = config.welcome_points || LOYALTY_DEFAULTS.welcomePoints;
+    const welcomePoints = config.welcome_points;
 
-    const newClient: LoyaltyClient = {
-      id: `lc-${Date.now()}`,
+    const newClient = await createClient(supabaseAdmin, {
       restaurant_id: config.restaurant_id,
       name: name.trim(),
       phone: normalizedPhone,
@@ -63,17 +60,18 @@ export async function POST(request: NextRequest) {
       barcode,
       pass_type: null,
       last_visit_at: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    });
 
-    // TODO: Replace with Supabase insert
-    mockLoyaltyClients.push(newClient);
+    if (!newClient) {
+      return NextResponse.json(
+        { error: "Erreur lors de la création du client" },
+        { status: 500 }
+      );
+    }
 
-    // Create welcome transaction if applicable
+    // Create welcome transaction
     if (welcomePoints > 0) {
-      const welcomeTransaction: LoyaltyTransaction = {
-        id: `lt-${Date.now()}`,
+      await createTransaction(supabaseAdmin, {
         client_id: newClient.id,
         restaurant_id: config.restaurant_id,
         type: "welcome",
@@ -81,9 +79,7 @@ export async function POST(request: NextRequest) {
         amount: null,
         description: "Bonus de bienvenue",
         staff_user_id: null,
-        created_at: new Date().toISOString(),
-      };
-      mockLoyaltyTransactions.push(welcomeTransaction);
+      });
     }
 
     return NextResponse.json({

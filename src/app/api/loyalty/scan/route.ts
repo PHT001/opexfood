@@ -1,18 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import {
-  mockLoyaltyClients,
-  mockLoyaltyConfig,
-  mockLoyaltyTransactions,
-  findClientByBarcode,
-} from "@/lib/loyalty/mock-data";
-import type { LoyaltyTransaction, ScanResponse } from "@/lib/loyalty/types";
+  getClientByBarcode,
+  getConfigByRestaurantId,
+  getRestaurantIdForUser,
+  creditPoints,
+  createTransaction,
+} from "@/lib/loyalty/queries";
+import type { ScanResponse } from "@/lib/loyalty/types";
 
 export async function POST(request: NextRequest) {
   try {
-    // TODO: Add auth check (staff must be authenticated)
-    // const supabase = await createClient();
-    // const { data: { user } } = await supabase.auth.getUser();
-    // if (!user) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    // Auth check
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const restaurantId = await getRestaurantIdForUser(supabase, user.id);
+    if (!restaurantId) {
+      return NextResponse.json(
+        { error: "Restaurant non trouvé" },
+        { status: 404 }
+      );
+    }
 
     const { barcode, amount } = await request.json();
 
@@ -23,9 +38,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find client by barcode
-    // TODO: Replace with Supabase query
-    const client = findClientByBarcode(barcode);
+    // Find client
+    const client = await getClientByBarcode(supabaseAdmin, barcode);
     if (!client) {
       return NextResponse.json(
         { error: "Client non trouvé" },
@@ -33,44 +47,56 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get config for this restaurant
-    const config = mockLoyaltyConfig;
+    // Verify this client belongs to the staff's restaurant
+    if (client.restaurant_id !== restaurantId) {
+      return NextResponse.json(
+        { error: "Client non autorisé" },
+        { status: 403 }
+      );
+    }
+
+    // Get config
+    const config = await getConfigByRestaurantId(supabaseAdmin, restaurantId);
+    if (!config) {
+      return NextResponse.json(
+        { error: "Configuration fidélité non trouvée" },
+        { status: 404 }
+      );
+    }
+
     const pointsEarned = Math.floor(amount * config.points_per_euro);
 
-    // Update client points
-    // TODO: Replace with Supabase atomic update
-    const clientIndex = mockLoyaltyClients.findIndex((c) => c.id === client.id);
-    if (clientIndex !== -1) {
-      mockLoyaltyClients[clientIndex].points += pointsEarned;
-      mockLoyaltyClients[clientIndex].total_visits += 1;
-      mockLoyaltyClients[clientIndex].total_spent += amount;
-      mockLoyaltyClients[clientIndex].last_visit_at = new Date().toISOString();
-      mockLoyaltyClients[clientIndex].updated_at = new Date().toISOString();
+    // Atomic point credit
+    const updatedClient = await creditPoints(
+      supabaseAdmin,
+      client.id,
+      pointsEarned,
+      amount
+    );
+
+    if (!updatedClient) {
+      return NextResponse.json(
+        { error: "Erreur lors de la mise à jour des points" },
+        { status: 500 }
+      );
     }
 
     // Create transaction
-    const transaction: LoyaltyTransaction = {
-      id: `lt-${Date.now()}`,
+    await createTransaction(supabaseAdmin, {
       client_id: client.id,
-      restaurant_id: client.restaurant_id,
+      restaurant_id: restaurantId,
       type: "earn",
       points: pointsEarned,
       amount,
       description: null,
-      staff_user_id: null,
-      created_at: new Date().toISOString(),
-    };
-    mockLoyaltyTransactions.push(transaction);
-
-    const newBalance = mockLoyaltyClients[clientIndex]?.points ?? client.points + pointsEarned;
-
-    // TODO: Call updateClientPasses() for real-time wallet updates (Phase 4)
+      staff_user_id: user.id,
+    });
 
     const response: ScanResponse = {
-      client: mockLoyaltyClients[clientIndex] ?? client,
+      client: updatedClient,
       points_earned: pointsEarned,
-      new_balance: newBalance,
-      reward_available: newBalance >= config.reward_threshold,
+      new_balance: updatedClient.points,
+      reward_available: updatedClient.points >= config.reward_threshold,
     };
 
     return NextResponse.json(response);

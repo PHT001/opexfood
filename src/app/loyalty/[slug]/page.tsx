@@ -1,22 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { Gift, Star, ArrowRight, CheckCircle2, Sparkles, User, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Gift, Star, ArrowRight, CheckCircle2, Sparkles, User, Phone, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
+import type { LoyaltyPublicInfo } from "@/lib/loyalty/types";
 
-type Step = "form" | "success";
+type Step = "loading" | "form" | "success";
 
 export default function LoyaltyInscriptionPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
 
-  const [step, setStep] = useState<Step>("form");
+  const [step, setStep] = useState<Step>("loading");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [info, setInfo] = useState<LoyaltyPublicInfo | null>(null);
   const [clientData, setClientData] = useState<{
     barcode: string;
     points: number;
@@ -24,10 +26,29 @@ export default function LoyaltyInscriptionPage() {
     welcome_points: number;
   } | null>(null);
 
-  // TODO: Fetch restaurant info (name, logo, colors) from API by slug
-  // For now, using defaults
-  const restaurantName = "Bowl & Go";
-  const primaryColor = "#ea580c";
+  // Fetch restaurant info
+  useEffect(() => {
+    fetch(`/api/loyalty/info/${slug}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("not found");
+        return r.json();
+      })
+      .then((data: LoyaltyPublicInfo) => {
+        setInfo(data);
+        setStep("form");
+      })
+      .catch(() => {
+        setError("Restaurant non trouvé");
+        setStep("form");
+      });
+  }, [slug]);
+
+  const restaurantName = info?.restaurant_name ?? "Restaurant";
+  const primaryColor = info?.primary_color ?? "#ea580c";
+  const pointsPerEuro = info?.config.points_per_euro ?? 10;
+  const rewardDescription = info?.config.reward_description ?? "1 Bowl offert";
+  const rewardThreshold = info?.config.reward_threshold ?? 500;
+  const welcomePointsDisplay = info?.config.welcome_points ?? 50;
 
   const formatPhoneInput = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 10);
@@ -84,6 +105,14 @@ export default function LoyaltyInscriptionPage() {
     }
   };
 
+  if (step === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -122,7 +151,9 @@ export default function LoyaltyInscriptionPage() {
                       <Star className="w-4 h-4 text-amber-500" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">10 points par euro</p>
+                      <p className="text-sm font-medium text-slate-900">
+                        {pointsPerEuro} points par euro
+                      </p>
                       <p className="text-xs text-slate-500">Cumulez à chaque visite</p>
                     </div>
                   </div>
@@ -131,7 +162,9 @@ export default function LoyaltyInscriptionPage() {
                       <Gift className="w-4 h-4 text-green-500" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">1 Bowl offert à 500 pts</p>
+                      <p className="text-sm font-medium text-slate-900">
+                        {rewardDescription} à {rewardThreshold} pts
+                      </p>
                       <p className="text-xs text-slate-500">Récompense automatique</p>
                     </div>
                   </div>
@@ -140,7 +173,9 @@ export default function LoyaltyInscriptionPage() {
                       <Sparkles className="w-4 h-4 text-violet-500" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">50 points offerts</p>
+                      <p className="text-sm font-medium text-slate-900">
+                        {welcomePointsDisplay} points offerts
+                      </p>
                       <p className="text-xs text-slate-500">Bonus d&apos;inscription</p>
                     </div>
                   </div>
@@ -238,7 +273,6 @@ export default function LoyaltyInscriptionPage() {
                   : `Votre compte est créé avec ${clientData.welcome_points} points offerts !`}
               </p>
 
-              {/* Points display */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -252,14 +286,12 @@ export default function LoyaltyInscriptionPage() {
                 <p className="text-xs text-slate-400 mt-1">pts</p>
               </motion.div>
 
-              {/* Action buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
                 className="mt-6 space-y-3"
               >
-                {/* PWA Pass button */}
                 <button
                   onClick={goToPass}
                   className="w-full py-3.5 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2"
@@ -269,7 +301,6 @@ export default function LoyaltyInscriptionPage() {
                   Voir ma carte fidélité
                 </button>
 
-                {/* Apple Wallet - Phase 2 */}
                 <button
                   disabled
                   className="w-full py-3.5 rounded-xl bg-black text-white font-semibold text-sm flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
@@ -278,7 +309,6 @@ export default function LoyaltyInscriptionPage() {
                   <span className="text-xs opacity-60">(bientôt)</span>
                 </button>
 
-                {/* Google Wallet - Phase 3 */}
                 <button
                   disabled
                   className="w-full py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold text-sm flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"

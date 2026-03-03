@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import {
-  mockLoyaltyClients,
-  mockLoyaltyTransactions,
-  mockLoyaltyConfig,
-  mockPublicInfo,
-} from "@/lib/loyalty/mock-data";
+  getClientByBarcode,
+  getTransactionsByClient,
+  getConfigByRestaurantId,
+  getPublicInfoBySlug,
+} from "@/lib/loyalty/queries";
 
 export async function GET(
   request: NextRequest,
@@ -13,8 +14,7 @@ export async function GET(
   try {
     const { barcode } = await params;
 
-    // TODO: Replace with Supabase query
-    const client = mockLoyaltyClients.find((c) => c.barcode === barcode);
+    const client = await getClientByBarcode(supabaseAdmin, barcode);
     if (!client) {
       return NextResponse.json(
         { error: "Client non trouvé" },
@@ -22,15 +22,27 @@ export async function GET(
       );
     }
 
-    const transactions = mockLoyaltyTransactions
-      .filter((t) => t.client_id === client.id)
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const config = await getConfigByRestaurantId(
+      supabaseAdmin,
+      client.restaurant_id
+    );
+    if (!config) {
+      return NextResponse.json(
+        { error: "Configuration non trouvée" },
+        { status: 404 }
+      );
+    }
+
+    const [transactions, restaurant] = await Promise.all([
+      getTransactionsByClient(supabaseAdmin, client.id),
+      getPublicInfoBySlug(supabaseAdmin, config.slug),
+    ]);
 
     return NextResponse.json({
       client,
       transactions,
-      config: mockLoyaltyConfig,
-      restaurant: mockPublicInfo,
+      config,
+      restaurant,
     });
   } catch (error) {
     console.error("Loyalty client lookup error:", error);

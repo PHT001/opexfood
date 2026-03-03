@@ -194,32 +194,3 @@ export const mockHistoryOrders: HistoryOrder[] = [
   { id: "CMD-091", date: "28/02/2026 19:00", customer: "Pierre G.", items: ["Bowl Méditerranéen"], total: 14.0, status: "livree", channel: "telephone" },
 ];
 
-export interface Client {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  points: number;
-  visits: number;
-  lastVisit: string;
-  totalSpent: number;
-  barcode?: string;
-  passType?: "apple" | "google" | "pwa" | null;
-}
-
-export const mockClients: Client[] = [
-  { id: "c1", name: "Marie Lefèvre", phone: "06 12 34 56 78", email: "marie.l@gmail.com", points: 280, visits: 14, lastVisit: "01/03/2026", totalSpent: 234.5 },
-  { id: "c2", name: "Thomas Dubois", phone: "06 23 45 67 89", email: "thomas.d@gmail.com", points: 450, visits: 23, lastVisit: "28/02/2026", totalSpent: 387.0 },
-  { id: "c3", name: "Sophie Martin", phone: "06 34 56 78 90", email: "sophie.m@outlook.fr", points: 120, visits: 6, lastVisit: "27/02/2026", totalSpent: 98.5 },
-  { id: "c4", name: "Lucas Renault", phone: "06 45 67 89 01", email: "lucas.r@gmail.com", points: 670, visits: 34, lastVisit: "01/03/2026", totalSpent: 562.0 },
-  { id: "c5", name: "Camille Bernard", phone: "06 56 78 90 12", email: "camille.b@yahoo.fr", points: 340, visits: 17, lastVisit: "25/02/2026", totalSpent: 289.5 },
-  { id: "c6", name: "Antoine Petit", phone: "06 67 89 01 23", email: "antoine.p@gmail.com", points: 90, visits: 5, lastVisit: "24/02/2026", totalSpent: 76.0 },
-  { id: "c7", name: "Julie Fontaine", phone: "06 78 90 12 34", email: "julie.f@gmail.com", points: 520, visits: 26, lastVisit: "01/03/2026", totalSpent: 445.0 },
-  { id: "c8", name: "Pierre Garcia", phone: "06 89 01 23 45", email: "pierre.g@outlook.fr", points: 180, visits: 9, lastVisit: "26/02/2026", totalSpent: 153.5 },
-];
-
-export const loyaltyConfig = {
-  pointsPerEuro: 10,
-  rewardThreshold: 500,
-  rewardDescription: "1 Bowl offert",
-};

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { generateSlug } from "@/lib/loyalty/queries";
 import Stripe from "stripe";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
 
       const { data: restaurant } = await supabase
         .from("restaurants")
-        .select("id")
+        .select("id, name")
         .eq("user_id", userId)
         .single();
 
@@ -77,6 +78,26 @@ export async function POST(request: NextRequest) {
             },
             { onConflict: "stripe_item_id" }
           );
+
+          // Auto-create loyalty config when fidelite module is subscribed
+          if (moduleId === "fidelite" && restaurant) {
+            const slug = generateSlug(
+              restaurant.name ?? "restaurant",
+              restaurant.id
+            );
+            await supabase.from("loyalty_configs").upsert(
+              {
+                restaurant_id: restaurant.id,
+                slug,
+                points_per_euro: 10,
+                reward_threshold: 500,
+                reward_description: "1 Bowl offert",
+                welcome_points: 50,
+                is_active: true,
+              },
+              { onConflict: "restaurant_id" }
+            );
+          }
         }
       }
       break;
