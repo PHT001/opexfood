@@ -184,7 +184,7 @@ export default function KiosquePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Scanner / Numpad */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="glass-card rounded-2xl p-6">
           {/* Mode toggle */}
           <div className="flex items-center gap-2 mb-4">
             <button
@@ -196,10 +196,9 @@ export default function KiosquePage() {
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
                 mode === "scanner"
-                  ? "text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-orange-500 text-white shadow-orange"
+                  : "bg-white/50 text-slate-600 hover:bg-white/70"
               )}
-              style={mode === "scanner" ? { backgroundColor: theme.primary } : undefined}
             >
               <Camera className="w-3.5 h-3.5" />
               Scanner
@@ -214,10 +213,9 @@ export default function KiosquePage() {
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
                 mode === "numpad"
-                  ? "text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-orange-500 text-white shadow-orange"
+                  : "bg-white/50 text-slate-600 hover:bg-white/70"
               )}
-              style={mode === "numpad" ? { backgroundColor: theme.primary } : undefined}
             >
               <Keyboard className="w-3.5 h-3.5" />
               Numéro

@@ -26,24 +26,24 @@ export default function DashboardPage() {
         <div className="flex flex-wrap gap-2">
           <Link
             href="/dashboard/modules"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-orange-200 bg-orange-50 text-sm font-medium text-orange-700 hover:bg-orange-100 transition-colors"
+            className="glass-button-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm"
           >
             <Plus className="w-4 h-4" />
             Ajouter un module
           </Link>
           <Link
             href="/dashboard/billing"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            className="glass-button-secondary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm"
           >
             <CreditCard className="w-4 h-4" />
-            Gérer l&apos;abonnement
+            Gerer l&apos;abonnement
           </Link>
           <Link
             href="/dashboard/settings"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            className="glass-button-secondary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm"
           >
             <Settings className="w-4 h-4" />
-            Paramètres
+            Parametres
           </Link>
         </div>
       </div>

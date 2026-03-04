@@ -133,8 +133,8 @@ export default function StepLoyaltyConfig({
             <Link2 className="w-4 h-4" />
             Lien d&apos;inscription *
           </label>
-          <div className="flex items-center gap-0 rounded-lg border border-slate-300 focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-100 transition-all overflow-hidden">
-            <span className="px-3 py-2.5 bg-slate-50 text-xs text-slate-400 border-r border-slate-300 whitespace-nowrap">
+          <div className="flex items-center gap-0 rounded-xl glass-input overflow-hidden focus-within:border-orange-400/40 focus-within:shadow-[0_0_0_3px_rgba(234,88,12,0.1)]">
+            <span className="px-3 py-2.5 bg-white/30 text-xs text-slate-400 border-r border-white/40 whitespace-nowrap">
               {baseUrl}/loyalty/
             </span>
             <input
@@ -171,7 +171,7 @@ export default function StepLoyaltyConfig({
             onChange={(e) =>
               onChange({ ...data, points_per_euro: parseInt(e.target.value) || 1 })
             }
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
           <p className="text-xs text-slate-400 mt-1">
             Ex : 10 pts/€ → un repas à 15€ = 150 points
@@ -194,7 +194,7 @@ export default function StepLoyaltyConfig({
             onChange={(e) =>
               onChange({ ...data, reward_threshold: parseInt(e.target.value) || 10 })
             }
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
           {errors.reward_threshold && (
             <p className="text-xs text-red-500 mt-1">{errors.reward_threshold}</p>
@@ -234,7 +234,7 @@ export default function StepLoyaltyConfig({
             onChange={(e) =>
               onChange({ ...data, welcome_points: parseInt(e.target.value) || 0 })
             }
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
           <p className="text-xs text-slate-400 mt-1">
             Points offerts automatiquement à l&apos;inscription (0 pour désactiver)
@@ -243,7 +243,7 @@ export default function StepLoyaltyConfig({
       </div>
 
       {/* Preview card */}
-      <div className="rounded-xl border border-slate-200 bg-gradient-to-r from-orange-50 to-orange-100 p-4">
+      <div className="rounded-xl bg-gradient-to-r from-orange-50/80 to-orange-100/60 backdrop-blur p-4 border border-orange-200/40">
         <p className="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">
           Aperçu pour vos clients
         </p>
@@ -263,14 +263,14 @@ export default function StepLoyaltyConfig({
       <div className="flex justify-between pt-2">
         <button
           onClick={onBack}
-          className="px-6 py-2.5 border border-slate-300 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-colors"
+          className="px-6 py-2.5 glass-button-secondary rounded-xl text-sm"
         >
           Retour
         </button>
         <button
           onClick={handleSubmit}
           disabled={saving || slugStatus === "taken"}
-          className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2"
+          className="px-6 py-2.5 glass-button-primary rounded-xl text-sm flex items-center gap-2"
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           Continuer

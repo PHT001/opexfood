@@ -23,7 +23,7 @@ export default function CurrentPlan() {
         month: "long",
         year: "numeric",
       })
-    : "—";
+    : "\u2014";
 
   const handleManageSubscription = async () => {
     try {
@@ -33,29 +33,28 @@ export default function CurrentPlan() {
         window.location.href = data.url;
       }
     } catch {
-      // Stripe portal not configured yet
-      alert("Le portail Stripe n'est pas encore configuré.");
+      alert("Le portail Stripe n'est pas encore configure.");
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
+    <div className="glass-card rounded-2xl p-6">
       <div className="flex items-start justify-between mb-5">
         <div>
           <h3 className="text-base font-semibold text-slate-900">
             Plan actuel
           </h3>
           <p className="text-sm text-slate-500 mt-0.5">
-            {loading ? "Chargement…" : `${activeModules.length} module${activeModules.length > 1 ? "s" : ""} actif${activeModules.length > 1 ? "s" : ""}`}
+            {loading ? "Chargement\u2026" : `${activeModules.length} module${activeModules.length > 1 ? "s" : ""} actif${activeModules.length > 1 ? "s" : ""}`}
           </p>
         </div>
         {activeModules.length > 0 && (
           <button
             onClick={handleManageSubscription}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors"
+            className="glass-button-primary inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm"
           >
             <CreditCard className="w-4 h-4" />
-            Gérer l&apos;abonnement
+            Gerer l&apos;abonnement
           </button>
         )}
       </div>
@@ -67,7 +66,7 @@ export default function CurrentPlan() {
           return (
             <div
               key={m.id}
-              className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
+              className="flex items-center justify-between py-2 border-b border-white/30 last:border-0"
             >
               <div className="flex items-center gap-3">
                 <div
@@ -80,17 +79,17 @@ export default function CurrentPlan() {
                 </span>
               </div>
               <span className="text-sm font-semibold text-slate-900">
-                {price} €/mois
+                {price} \u20AC/mois
               </span>
             </div>
           );
         })}
       </div>
 
-      <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between">
+      <div className="mt-4 pt-4 border-t border-white/30 flex items-center justify-between">
         <div>
           <p className="text-sm text-slate-500">Total mensuel</p>
-          <p className="text-xl font-bold text-slate-900">{total} €</p>
+          <p className="text-xl font-bold text-slate-900">{total} \u20AC</p>
         </div>
         <div className="text-right">
           <p className="text-xs text-slate-400">Prochaine facture</p>

@@ -77,9 +77,6 @@ export default function SettingsPage() {
     }
   };
 
-  const inputClassName =
-    "w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all";
-
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -91,14 +88,14 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Paramètres</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Parametres</h1>
         <p className="text-sm text-slate-500 mt-1">
           Modifiez les informations et l&apos;apparence de votre restaurant.
         </p>
       </div>
 
       {/* Restaurant info */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-5">
+      <div className="glass-card rounded-2xl p-6 space-y-5">
         <h2 className="text-base font-semibold text-slate-900">
           Informations du restaurant
         </h2>
@@ -112,7 +109,7 @@ export default function SettingsPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className={inputClassName}
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
         </div>
 
@@ -126,27 +123,27 @@ export default function SettingsPage() {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="12 rue de la Paix, 75002 Paris"
-            className={inputClassName}
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
         </div>
 
         <div>
           <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-1.5">
             <Phone className="w-4 h-4" />
-            Téléphone
+            Telephone
           </label>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="01 23 45 67 89"
-            className={inputClassName}
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
         </div>
       </div>
 
       {/* Brand */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-5">
+      <div className="glass-card rounded-2xl p-6 space-y-5">
         <h2 className="text-base font-semibold text-slate-900">
           Personnalisation visuelle
         </h2>
@@ -168,7 +165,7 @@ export default function SettingsPage() {
                     primaryColor === c.value ? c.value : "transparent",
                   boxShadow:
                     primaryColor === c.value
-                      ? `0 0 0 2px white, 0 0 0 4px ${c.value}`
+                      ? `0 0 0 2px white, 0 0 0 4px ${c.value}, 0 4px 12px ${c.value}40`
                       : "none",
                 }}
                 title={c.label}
@@ -203,7 +200,7 @@ export default function SettingsPage() {
                     secondaryColor === c.value ? c.value : "transparent",
                   boxShadow:
                     secondaryColor === c.value
-                      ? `0 0 0 2px white, 0 0 0 4px ${c.value}`
+                      ? `0 0 0 2px white, 0 0 0 4px ${c.value}, 0 4px 12px ${c.value}40`
                       : "none",
                 }}
                 title={c.label}
@@ -222,9 +219,9 @@ export default function SettingsPage() {
         </div>
 
         {/* Preview */}
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="rounded-xl bg-white/40 backdrop-blur p-4 border border-white/60">
           <p className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wide">
-            Aperçu
+            Apercu
           </p>
           <div className="flex items-center gap-4">
             <div
@@ -254,12 +251,12 @@ export default function SettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-70 text-white text-sm font-semibold rounded-lg transition-colors"
+          className="glass-button-primary inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm"
         >
           {saved ? (
             <>
               <Check className="w-4 h-4" />
-              Enregistré !
+              Enregistre !
             </>
           ) : saving ? (
             <>

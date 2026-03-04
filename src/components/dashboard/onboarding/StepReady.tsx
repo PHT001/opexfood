@@ -44,14 +44,14 @@ export default function StepReady({ slug, onComplete }: StepReadyProps) {
       <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 transition-all duration-500 delay-400 ${showContent ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
         <a
           href="/dashboard/espace/clients"
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all"
+          className="flex items-center justify-center gap-2 py-3 px-4 glass-button-secondary rounded-xl text-sm"
         >
           <Users className="w-4 h-4" />
           Mes clients
         </a>
         <a
           href="/dashboard/espace/kiosque"
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all"
+          className="flex items-center justify-center gap-2 py-3 px-4 glass-button-secondary rounded-xl text-sm"
         >
           <Smartphone className="w-4 h-4" />
           Kiosque scan
@@ -60,7 +60,7 @@ export default function StepReady({ slug, onComplete }: StepReadyProps) {
           href={`/loyalty/${slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all"
+          className="flex items-center justify-center gap-2 py-3 px-4 glass-button-secondary rounded-xl text-sm"
         >
           <ExternalLink className="w-4 h-4" />
           Tester
@@ -71,7 +71,7 @@ export default function StepReady({ slug, onComplete }: StepReadyProps) {
       <div className="flex justify-center pt-2">
         <a
           href="/dashboard"
-          className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2"
+          className="px-8 py-3 glass-button-primary rounded-xl text-sm flex items-center gap-2"
         >
           <LayoutDashboard className="w-4 h-4" />
           Aller au dashboard

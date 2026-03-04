@@ -41,7 +41,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
+    <div className="glass-card rounded-2xl p-6">
       <h3 className="text-sm font-semibold text-slate-900 mb-4">
         Configuration fidélité
       </h3>
@@ -54,7 +54,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
             max={100}
             value={config.points_per_euro}
             onChange={(e) => setConfig({ ...config, points_per_euro: Number(e.target.value) })}
-            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm rounded-xl glass-input"
             style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
           />
           <p className="text-xs text-slate-400 mt-1">
@@ -69,7 +69,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
               min={10}
               value={config.reward_threshold}
               onChange={(e) => setConfig({ ...config, reward_threshold: Number(e.target.value) })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              className="w-full px-3 py-2 text-sm rounded-xl glass-input"
               style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
             />
             <span className="text-sm text-slate-500 shrink-0">pts</span>
@@ -82,7 +82,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
             value={config.reward_description}
             onChange={(e) => setConfig({ ...config, reward_description: e.target.value })}
             placeholder="Ex: 1 Bowl offert"
-            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+            className="w-full px-3 py-2 text-sm rounded-xl glass-input"
             style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
           />
         </div>
@@ -94,7 +94,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
               min={0}
               value={config.welcome_points}
               onChange={(e) => setConfig({ ...config, welcome_points: Number(e.target.value) })}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              className="w-full px-3 py-2 text-sm rounded-xl glass-input"
               style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
             />
             <span className="text-sm text-slate-500 shrink-0">pts</span>
@@ -107,8 +107,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-full py-2.5 rounded-lg text-white text-sm font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-        style={{ backgroundColor: theme.primary }}
+        className="mt-4 w-full py-2.5 rounded-xl glass-button-primary text-sm flex items-center justify-center gap-2"
       >
         {saved ? (
           <>

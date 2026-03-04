@@ -91,7 +91,7 @@ export default function StepRestaurantInfo({
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
             placeholder="Ex : Le Petit Bistro"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400"
           />
           {errors.name && (
             <p className="text-xs text-red-500 mt-1">{errors.name}</p>
@@ -109,7 +109,7 @@ export default function StepRestaurantInfo({
             value={data.address}
             onChange={(e) => onChange({ ...data, address: e.target.value })}
             placeholder="Ex : 12 rue de la Paix, 75002 Paris"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400"
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function StepRestaurantInfo({
             value={data.phone}
             onChange={(e) => onChange({ ...data, phone: e.target.value })}
             placeholder="Ex : 01 23 45 67 89"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all"
+            className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400"
           />
         </div>
 
@@ -206,7 +206,7 @@ export default function StepRestaurantInfo({
       </div>
 
       {/* Preview */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl bg-white/40 backdrop-blur p-4 border border-white/60">
         <p className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wide">
           Aperçu
         </p>
@@ -240,7 +240,7 @@ export default function StepRestaurantInfo({
         <button
           onClick={handleSubmit}
           disabled={saving}
-          className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2"
+          className="px-6 py-2.5 glass-button-primary rounded-xl text-sm flex items-center gap-2"
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
           Continuer

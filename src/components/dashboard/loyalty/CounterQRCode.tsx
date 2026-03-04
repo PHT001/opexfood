@@ -45,7 +45,7 @@ export default function CounterQRCode({ slug }: CounterQRCodeProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
+    <div className="glass-card rounded-2xl p-6">
       <div className="flex items-center gap-2 mb-4">
         <QrCode className="w-4 h-4 text-slate-400" />
         <h3 className="text-sm font-semibold text-slate-900">
@@ -58,7 +58,7 @@ export default function CounterQRCode({ slug }: CounterQRCodeProps) {
       </p>
 
       {/* QR Code display */}
-      <div className="bg-slate-50 rounded-xl p-6 flex items-center justify-center">
+      <div className="bg-white/40 backdrop-blur rounded-xl p-6 flex items-center justify-center border border-white/60">
         {qrDataUrl ? (
           <img
             src={qrDataUrl}
@@ -72,7 +72,7 @@ export default function CounterQRCode({ slug }: CounterQRCodeProps) {
 
       {/* URL display */}
       <div className="mt-4 flex items-center gap-2">
-        <div className="flex-1 bg-slate-50 rounded-lg px-3 py-2 text-xs text-slate-500 font-mono truncate">
+        <div className="flex-1 bg-white/40 backdrop-blur rounded-lg px-3 py-2 text-xs text-slate-500 font-mono truncate border border-white/60">
           {inscriptionUrl}
         </div>
         <button
@@ -101,14 +101,14 @@ export default function CounterQRCode({ slug }: CounterQRCodeProps) {
       <div className="mt-4 grid grid-cols-2 gap-3">
         <button
           onClick={handleDownloadSVG}
-          className="py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-medium text-slate-700 transition-colors flex items-center justify-center gap-2"
+          className="py-2.5 rounded-xl glass-button-secondary text-sm flex items-center justify-center gap-2"
         >
           <Download className="w-4 h-4" />
           SVG (print)
         </button>
         <button
           onClick={handleDownloadPNG}
-          className="py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-medium text-slate-700 transition-colors flex items-center justify-center gap-2"
+          className="py-2.5 rounded-xl glass-button-secondary text-sm flex items-center justify-center gap-2"
         >
           <Download className="w-4 h-4" />
           PNG (web)

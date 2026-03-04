@@ -20,7 +20,7 @@ export default function OverviewStats() {
     : null;
   const nextBillingLabel = nextBilling
     ? nextBilling.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
-    : "—";
+    : "\u2014";
   const daysUntil = nextBilling
     ? Math.max(0, Math.ceil((nextBilling.getTime() - Date.now()) / 86400000))
     : null;
@@ -28,32 +28,32 @@ export default function OverviewStats() {
   const stats = [
     {
       label: "Modules actifs",
-      value: loading ? "…" : `${activeCount}`,
+      value: loading ? "\u2026" : `${activeCount}`,
       sub: `sur ${moduleDefinitions.length} disponibles`,
       icon: Puzzle,
       color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      bgGradient: "from-orange-100 to-orange-50",
     },
     {
       label: "Abonnement mensuel",
-      value: loading ? "…" : `${total} €`,
+      value: loading ? "\u2026" : `${total} \u20AC`,
       sub: "/mois",
       icon: CreditCard,
       color: "text-emerald-600",
-      bgColor: "bg-emerald-50",
+      bgGradient: "from-emerald-100 to-emerald-50",
     },
     {
       label: "Prochaine facture",
-      value: loading ? "…" : nextBillingLabel,
+      value: loading ? "\u2026" : nextBillingLabel,
       sub: daysUntil !== null ? `dans ${daysUntil} jours` : "",
       icon: CalendarClock,
       color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      bgGradient: "from-blue-100 to-blue-50",
     },
     {
       label: "Statut",
       value: loading
-        ? "…"
+        ? "\u2026"
         : status === "active"
           ? "Actif"
           : status === "inactive"
@@ -67,7 +67,7 @@ export default function OverviewStats() {
             : "",
       icon: Activity,
       color: status === "active" ? "text-green-600" : "text-slate-400",
-      bgColor: status === "active" ? "bg-green-50" : "bg-slate-50",
+      bgGradient: status === "active" ? "from-green-100 to-green-50" : "from-slate-100 to-slate-50",
     },
   ];
 
@@ -78,16 +78,16 @@ export default function OverviewStats() {
         return (
           <div
             key={s.label}
-            className="bg-white rounded-xl border border-slate-200 p-5 flex items-start gap-4"
+            className="glass-card glass-card-hover rounded-2xl p-5 flex items-start gap-4"
           >
             <div
-              className={`w-10 h-10 rounded-lg ${s.bgColor} flex items-center justify-center shrink-0`}
+              className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.bgGradient} flex items-center justify-center shrink-0 shadow-inner`}
             >
               <Icon className={`w-5 h-5 ${s.color}`} />
             </div>
             <div>
-              <p className="text-xs text-slate-500 font-medium">{s.label}</p>
-              <p className="text-xl font-bold text-slate-900 mt-0.5">
+              <p className="text-xs text-slate-500 font-medium uppercase tracking-wide">{s.label}</p>
+              <p className="text-2xl font-bold text-slate-900 mt-0.5">
                 {s.value}
                 {s.sub && (
                   <span className="text-sm font-normal text-slate-400 ml-1">

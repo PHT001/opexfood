@@ -147,7 +147,7 @@ export default function ClientsPage() {
           return (
             <div
               key={s.label}
-              className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3"
+              className="glass-card glass-card-hover rounded-2xl p-4 flex items-center gap-3"
             >
               <div
                 className={cn(
@@ -167,8 +167,8 @@ export default function ClientsPage() {
       </div>
 
       {/* Search + table */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100">
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-white/30">
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -176,7 +176,7 @@ export default function ClientsPage() {
               placeholder="Rechercher un client..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400"
+              className="w-full pl-10 pr-4 py-2 text-sm rounded-xl glass-input"
               style={
                 { "--tw-ring-color": theme.primaryLight } as React.CSSProperties
               }
@@ -187,7 +187,7 @@ export default function ClientsPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-white/20 glass-table-header">
                 <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
                   <button
                     onClick={() => handleSort("name")}
@@ -242,7 +242,7 @@ export default function ClientsPage() {
                 return (
                   <tr
                     key={client.id}
-                    className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors"
+                    className="border-b border-white/10 last:border-0 glass-table-row"
                   >
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">

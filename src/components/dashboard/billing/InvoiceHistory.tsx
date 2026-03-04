@@ -4,9 +4,9 @@ import { Download, FileText } from "lucide-react";
 import { useBilling } from "@/hooks/useBilling";
 
 const statusLabels: Record<string, { label: string; className: string }> = {
-  paid: { label: "Payée", className: "bg-green-100 text-green-700" },
-  open: { label: "En attente", className: "bg-yellow-100 text-yellow-700" },
-  void: { label: "Annulée", className: "bg-slate-100 text-slate-500" },
+  paid: { label: "Payee", className: "bg-green-100/80 text-green-700 glass-badge" },
+  open: { label: "En attente", className: "bg-yellow-100/80 text-yellow-700 glass-badge" },
+  void: { label: "Annulee", className: "bg-slate-100/80 text-slate-500 glass-badge" },
 };
 
 export default function InvoiceHistory() {
@@ -14,8 +14,8 @@ export default function InvoiceHistory() {
   const invoices = data?.invoices ?? [];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-100">
+    <div className="glass-card rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-white/30">
         <h3 className="text-base font-semibold text-slate-900">
           Historique des factures
         </h3>
@@ -23,7 +23,7 @@ export default function InvoiceHistory() {
 
       {loading ? (
         <div className="px-6 py-12 text-center">
-          <p className="text-sm text-slate-400">Chargement…</p>
+          <p className="text-sm text-slate-400">Chargement\u2026</p>
         </div>
       ) : invoices.length === 0 ? (
         <div className="px-6 py-12 text-center">
@@ -31,9 +31,9 @@ export default function InvoiceHistory() {
           <p className="text-sm text-slate-500">Aucune facture pour le moment.</p>
         </div>
       ) : (
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-white/20">
           {/* Header */}
-          <div className="grid grid-cols-4 gap-4 px-6 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">
+          <div className="grid grid-cols-4 gap-4 px-6 py-3 glass-table-header text-xs font-medium text-slate-400 uppercase tracking-wide">
             <span>Date</span>
             <span>Montant</span>
             <span>Statut</span>
@@ -49,15 +49,15 @@ export default function InvoiceHistory() {
                   month: "long",
                   year: "numeric",
                 })
-              : "—";
+              : "\u2014";
             return (
               <div
                 key={inv.id}
-                className="grid grid-cols-4 gap-4 px-6 py-3.5 items-center hover:bg-slate-50 transition-colors"
+                className="grid grid-cols-4 gap-4 px-6 py-3.5 items-center glass-table-row"
               >
                 <span className="text-sm text-slate-700">{dateStr}</span>
                 <span className="text-sm font-semibold text-slate-900">
-                  {inv.amount.toFixed(2)} €
+                  {inv.amount.toFixed(2)} \u20AC
                 </span>
                 <span>
                   <span

@@ -168,7 +168,7 @@ export default function OnboardingShell() {
 
       {/* Step content — right side */}
       <div className="flex-1 min-w-0">
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 lg:p-8 shadow-sm">
+        <div className="glass-card rounded-2xl p-6 lg:p-8">
           {currentStep === 0 && (
             <StepRestaurantInfo
               data={restaurantInfo}
