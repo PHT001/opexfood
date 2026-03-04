@@ -1,0 +1,71 @@
+{
+  "formatVersion": 1,
+  "teamIdentifier": "CD5B83L1ZJ",
+  "passTypeIdentifier": "pass.com.opexfood.loyalty",
+  "organizationName": "OpexFood",
+  "description": "Carte de fidélité OpexFood",
+  "foregroundColor": "rgb(255, 255, 255)",
+  "backgroundColor": "rgb(234, 88, 12)",
+  "labelColor": "rgb(255, 255, 255)",
+  "storeCard": {
+    "headerFields": [
+      {
+        "key": "points",
+        "label": "POINTS",
+        "value": 0,
+        "textAlignment": "PKTextAlignmentRight"
+      }
+    ],
+    "primaryFields": [
+      {
+        "key": "balance",
+        "label": "Solde fidélité",
+        "value": "0 pts"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "key": "reward",
+        "label": "Récompense",
+        "value": "1 Bowl offert"
+      }
+    ],
+    "auxiliaryFields": [
+      {
+        "key": "name",
+        "label": "Client",
+        "value": ""
+      },
+      {
+        "key": "threshold",
+        "label": "Objectif",
+        "value": "500 pts",
+        "textAlignment": "PKTextAlignmentRight"
+      }
+    ],
+    "backFields": [
+      {
+        "key": "info",
+        "label": "Programme de fidélité",
+        "value": "Gagnez des points à chaque achat et obtenez des récompenses !"
+      },
+      {
+        "key": "terms",
+        "label": "Conditions",
+        "value": "Les points sont cumulables et non transférables. La récompense est délivrée une fois le seuil atteint."
+      }
+    ]
+  },
+  "barcode": {
+    "format": "PKBarcodeFormatQR",
+    "message": "",
+    "messageEncoding": "iso-8859-1"
+  },
+  "barcodes": [
+    {
+      "format": "PKBarcodeFormatQR",
+      "message": "",
+      "messageEncoding": "iso-8859-1"
+    }
+  ]
+}
