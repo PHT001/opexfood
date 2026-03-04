@@ -97,3 +97,11 @@ export interface ScanResponse {
   new_balance: number;
   reward_available: boolean;
 }
+
+// Redeem response
+export interface RedeemResponse {
+  client: LoyaltyClient;
+  points_deducted: number;
+  new_balance: number;
+  reward_description: string;
+}

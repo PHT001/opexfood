@@ -214,6 +214,20 @@ export async function getRestaurantIdForUser(
   return data?.id ?? null;
 }
 
+/** Atomic point redemption via Postgres RPC */
+export async function redeemPoints(
+  supabase: SupabaseClient,
+  clientId: string,
+  points: number
+): Promise<LoyaltyClient | null> {
+  const { data, error } = await supabase.rpc("redeem_loyalty_points", {
+    p_client_id: clientId,
+    p_points: points,
+  });
+  if (error) throw error;
+  return Array.isArray(data) ? data[0] ?? null : data;
+}
+
 /** Generate a slug from a restaurant name */
 export function generateSlug(name: string, fallbackId: string): string {
   const slug = name

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   User,
@@ -10,8 +10,9 @@ import {
   Sparkles,
   ArrowLeft,
   Loader2,
+  PartyPopper,
 } from "lucide-react";
-import type { LoyaltyClient, LoyaltyConfig, ScanResponse } from "@/lib/loyalty/types";
+import type { LoyaltyClient, LoyaltyConfig, ScanResponse, RedeemResponse } from "@/lib/loyalty/types";
 
 interface ScanResultProps {
   client: LoyaltyClient;
@@ -20,7 +21,7 @@ interface ScanResultProps {
   primaryColor: string;
 }
 
-type Step = "amount" | "confirming" | "success";
+type Step = "amount" | "confirming" | "success" | "redeemed";
 
 export default function ScanResult({
   client,
@@ -32,6 +33,9 @@ export default function ScanResult({
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState<ScanResponse | null>(null);
+  const [redeemResult, setRedeemResult] = useState<RedeemResponse | null>(null);
+  const [redeeming, setRedeeming] = useState(false);
+  const autoResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const numericAmount = parseFloat(amount) || 0;
   const pointsPreview = Math.floor(numericAmount * config.points_per_euro);
@@ -39,6 +43,36 @@ export default function ScanResult({
     (client.points / config.reward_threshold) * 100,
     100
   );
+
+  const handleRedeemDirect = async () => {
+    setRedeeming(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/loyalty/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ barcode: client.barcode }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Erreur");
+        setRedeeming(false);
+        return;
+      }
+
+      setRedeemResult(data as RedeemResponse);
+      setStep("redeemed");
+
+      autoResetTimer.current = setTimeout(() => {
+        onReset();
+      }, 6000);
+    } catch {
+      setError("Erreur de connexion");
+      setRedeeming(false);
+    }
+  };
 
   const handleDigit = (d: string) => {
     if (d === "." && amount.includes(".")) return;
@@ -48,6 +82,44 @@ export default function ScanResult({
 
   const handleDelete = () => {
     setAmount((prev) => prev.slice(0, -1));
+  };
+
+  const handleRedeem = async () => {
+    if (!result) return;
+    setRedeeming(true);
+    setError("");
+
+    // Cancel auto-reset
+    if (autoResetTimer.current) {
+      clearTimeout(autoResetTimer.current);
+      autoResetTimer.current = null;
+    }
+
+    try {
+      const res = await fetch("/api/loyalty/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ barcode: client.barcode }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Erreur");
+        setRedeeming(false);
+        return;
+      }
+
+      setRedeemResult(data as RedeemResponse);
+      setStep("redeemed");
+
+      // Auto-reset after 6 seconds
+      autoResetTimer.current = setTimeout(() => {
+        onReset();
+      }, 6000);
+    } catch {
+      setError("Erreur de connexion");
+      setRedeeming(false);
+    }
   };
 
   const handleConfirm = async () => {
@@ -72,15 +144,71 @@ export default function ScanResult({
       setResult(data as ScanResponse);
       setStep("success");
 
-      // Auto-reset after 5 seconds
-      setTimeout(() => {
+      // Auto-reset after 8 seconds (longer to allow redeem)
+      autoResetTimer.current = setTimeout(() => {
         onReset();
-      }, 5000);
+      }, 8000);
     } catch {
       setError("Erreur de connexion");
       setStep("amount");
     }
   };
+
+  // Redeemed view
+  if (step === "redeemed" && redeemResult) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center py-8 px-4"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.2 }}
+          className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center mx-auto mb-4"
+        >
+          <PartyPopper className="w-8 h-8 text-violet-600" />
+        </motion.div>
+
+        <h3 className="text-lg font-bold text-slate-900">Récompense utilisée !</h3>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-3 bg-violet-50 rounded-xl px-4 py-3 border border-violet-200"
+        >
+          <Gift className="w-5 h-5 text-violet-500 mx-auto mb-1" />
+          <p className="text-sm font-semibold text-violet-700">
+            {redeemResult.reward_description}
+          </p>
+          <p className="text-xs text-violet-500 mt-1">
+            -{redeemResult.points_deducted} points déduits
+          </p>
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="text-sm text-slate-500 mt-3"
+        >
+          Nouveau solde :{" "}
+          <span className="font-bold text-slate-700">
+            {redeemResult.new_balance} points
+          </span>
+        </motion.p>
+
+        <button
+          onClick={onReset}
+          className="mt-6 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          Scanner un autre client
+        </button>
+      </motion.div>
+    );
+  }
 
   if (step === "success" && result) {
     return (
@@ -129,18 +257,42 @@ export default function ScanResult({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="mt-4 bg-violet-50 rounded-xl px-4 py-3 border border-violet-200"
+            className="mt-4"
           >
-            <Gift className="w-5 h-5 text-violet-500 mx-auto mb-1" />
-            <p className="text-sm font-semibold text-violet-700">
-              {config.reward_description} disponible !
-            </p>
+            <div className="bg-violet-50 rounded-xl px-4 py-3 border border-violet-200 mb-3">
+              <Gift className="w-5 h-5 text-violet-500 mx-auto mb-1" />
+              <p className="text-sm font-semibold text-violet-700">
+                {config.reward_description} disponible !
+              </p>
+              <p className="text-xs text-violet-400 mt-1">
+                {result.new_balance} / {config.reward_threshold} points
+              </p>
+            </div>
+
+            {error && (
+              <p className="text-xs text-red-500 mb-2">{error}</p>
+            )}
+
+            <button
+              onClick={handleRedeem}
+              disabled={redeeming}
+              className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+            >
+              {redeeming ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Gift className="w-4 h-4" />
+                  Utiliser la récompense
+                </>
+              )}
+            </button>
           </motion.div>
         )}
 
         <button
           onClick={onReset}
-          className="mt-6 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+          className="mt-4 text-sm text-slate-400 hover:text-slate-600 transition-colors"
         >
           Scanner un autre client
         </button>
@@ -197,6 +349,32 @@ export default function ScanResult({
             }}
           />
         </div>
+
+        {/* Reward available banner */}
+        {client.points >= config.reward_threshold && (
+          <div className="mt-3 bg-violet-50 rounded-lg px-3 py-2 border border-violet-200">
+            <div className="flex items-center gap-2 mb-2">
+              <Gift className="w-4 h-4 text-violet-500" />
+              <p className="text-xs font-semibold text-violet-700">
+                {config.reward_description} disponible !
+              </p>
+            </div>
+            <button
+              onClick={handleRedeemDirect}
+              disabled={redeeming}
+              className="w-full py-2 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
+            >
+              {redeeming ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <>
+                  <Gift className="w-3.5 h-3.5" />
+                  Utiliser la récompense
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Amount input */}

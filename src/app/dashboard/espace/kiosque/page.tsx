@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Gift,
@@ -11,6 +11,7 @@ import {
   Camera,
   Keyboard,
   Loader2,
+  PartyPopper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
@@ -18,10 +19,10 @@ import CounterQRCode from "@/components/dashboard/loyalty/CounterQRCode";
 import LoyaltyConfigForm from "@/components/dashboard/loyalty/LoyaltyConfigForm";
 import BarcodeScanner from "@/components/dashboard/loyalty/BarcodeScanner";
 import ScanResult from "@/components/dashboard/loyalty/ScanResult";
-import type { LoyaltyConfig, LoyaltyClient } from "@/lib/loyalty/types";
+import type { LoyaltyConfig, LoyaltyClient, RedeemResponse } from "@/lib/loyalty/types";
 
 type Mode = "scanner" | "numpad";
-type NumpadStep = "phone" | "confirm" | "success";
+type NumpadStep = "phone" | "confirm" | "success" | "redeemed";
 
 export default function KiosquePage() {
   const { theme } = useRestaurantTheme();
@@ -39,6 +40,9 @@ export default function KiosquePage() {
   const [foundClient, setFoundClient] = useState<LoyaltyClient | null>(null);
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [lookupLoading, setLookupLoading] = useState(false);
+  const [redeeming, setRedeeming] = useState(false);
+  const [redeemResult, setRedeemResult] = useState<RedeemResponse | null>(null);
+  const numpadResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch config on mount
   useEffect(() => {
@@ -107,19 +111,56 @@ export default function KiosquePage() {
 
   const handleConfirm = () => {
     setNumpadStep("success");
-    setTimeout(() => {
-      setNumpadStep("phone");
-      setPhone("");
-      setFoundClient(null);
-      setEarnedPoints(0);
-    }, 4000);
+    numpadResetTimer.current = setTimeout(() => {
+      handleNumpadReset();
+    }, 8000);
+  };
+
+  const handleNumpadRedeem = async () => {
+    if (!foundClient) return;
+    setRedeeming(true);
+
+    // Cancel auto-reset
+    if (numpadResetTimer.current) {
+      clearTimeout(numpadResetTimer.current);
+      numpadResetTimer.current = null;
+    }
+
+    try {
+      const res = await fetch("/api/loyalty/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ barcode: foundClient.barcode }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setRedeeming(false);
+        return;
+      }
+
+      setRedeemResult(data as RedeemResponse);
+      setNumpadStep("redeemed");
+
+      numpadResetTimer.current = setTimeout(() => {
+        handleNumpadReset();
+      }, 6000);
+    } catch {
+      setRedeeming(false);
+    }
   };
 
   const handleNumpadReset = () => {
+    if (numpadResetTimer.current) {
+      clearTimeout(numpadResetTimer.current);
+      numpadResetTimer.current = null;
+    }
     setNumpadStep("phone");
     setPhone("");
     setFoundClient(null);
     setEarnedPoints(0);
+    setRedeeming(false);
+    setRedeemResult(null);
   };
 
   const formatPhone = (p: string) => p.replace(/(\d{2})(?=\d)/g, "$1 ");
@@ -412,14 +453,80 @@ export default function KiosquePage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.8 }}
-                            className="mt-4 bg-violet-50 rounded-xl px-4 py-3 border border-violet-200 text-center"
+                            className="mt-4 w-full"
                           >
-                            <Gift className="w-5 h-5 text-violet-500 mx-auto mb-1" />
-                            <p className="text-sm font-semibold text-violet-700">
-                              {config.reward_description} disponible !
-                            </p>
+                            <div className="bg-violet-50 rounded-xl px-4 py-3 border border-violet-200 text-center mb-3">
+                              <Gift className="w-5 h-5 text-violet-500 mx-auto mb-1" />
+                              <p className="text-sm font-semibold text-violet-700">
+                                {config.reward_description} disponible !
+                              </p>
+                            </div>
+                            <button
+                              onClick={handleNumpadRedeem}
+                              disabled={redeeming}
+                              className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                            >
+                              {redeeming ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <>
+                                  <Gift className="w-4 h-4" />
+                                  Utiliser la récompense
+                                </>
+                              )}
+                            </button>
                           </motion.div>
                         )}
+                    </motion.div>
+                  )}
+
+                  {numpadStep === "redeemed" && redeemResult && (
+                    <motion.div
+                      key="redeemed"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="flex-1 flex flex-col items-center justify-center p-6"
+                    >
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.2 }}
+                        className="w-20 h-20 rounded-full bg-violet-100 flex items-center justify-center mb-6"
+                      >
+                        <PartyPopper className="w-10 h-10 text-violet-600" />
+                      </motion.div>
+
+                      <h4 className="text-xl font-bold text-slate-900">
+                        Récompense utilisée !
+                      </h4>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="mt-3 bg-violet-50 rounded-xl px-4 py-3 border border-violet-200 text-center w-full"
+                      >
+                        <Gift className="w-5 h-5 text-violet-500 mx-auto mb-1" />
+                        <p className="text-sm font-semibold text-violet-700">
+                          {redeemResult.reward_description}
+                        </p>
+                        <p className="text-xs text-violet-400 mt-1">
+                          -{redeemResult.points_deducted} points
+                        </p>
+                      </motion.div>
+
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                        className="text-sm text-slate-500 mt-3"
+                      >
+                        Nouveau solde :{" "}
+                        <span className="font-bold text-slate-700">
+                          {redeemResult.new_balance} points
+                        </span>
+                      </motion.p>
                     </motion.div>
                   )}
                 </AnimatePresence>
