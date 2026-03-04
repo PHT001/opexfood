@@ -12,10 +12,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const APP_URL = "https://opexfood.vercel.app";
+
 export const metadata: Metadata = {
-  title: "OpexFood | Plateforme IA pour la Restauration",
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: "OpexFood | Plateforme IA pour la Restauration",
+    template: "%s | OpexFood",
+  },
   description:
-    "Automatisez votre restaurant avec OpexFood. Chatbot IA, programme de fidélité, CRM et outils de gestion dans une seule plateforme SaaS.",
+    "Automatisez votre restaurant avec OpexFood. Chatbot IA, programme de fidélité, agent vocal et outils de gestion dans une seule plateforme SaaS.",
   keywords: [
     "restaurant",
     "SaaS",
@@ -24,7 +30,33 @@ export const metadata: Metadata = {
     "CRM",
     "fast-food",
     "gestion restaurant",
+    "agent vocal IA",
+    "automatisation restaurant",
+    "OpexFood",
   ],
+  authors: [{ name: "OpexFood" }],
+  creator: "OpexFood",
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: APP_URL,
+    siteName: "OpexFood",
+    title: "OpexFood — Plateforme IA pour la Restauration",
+    description:
+      "Chatbot IA, programme de fidélité et agent vocal pour automatiser votre restaurant. Sans engagement.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "OpexFood" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OpexFood — Plateforme IA pour la Restauration",
+    description:
+      "Chatbot IA, programme de fidélité et agent vocal pour automatiser votre restaurant.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
