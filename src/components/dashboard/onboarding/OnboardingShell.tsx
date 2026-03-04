@@ -1,46 +1,97 @@
 "use client";
 
-import { useState } from "react";
-import { Building2, FileText, Palette, Clock } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Building2, Gift, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useOnboarding } from "@/hooks/useOnboarding";
+import { useUser } from "@/hooks/useUser";
 import StepRestaurantInfo, {
   type RestaurantInfoData,
 } from "./StepRestaurantInfo";
-import StepDocumentUpload, {
-  type DocumentUploadData,
-} from "./StepDocumentUpload";
-import StepBrandCustomization, { type BrandData } from "./StepBrandCustomization";
-import StepWaiting from "./StepWaiting";
+import StepLoyaltyConfig, {
+  type LoyaltyConfigData,
+} from "./StepLoyaltyConfig";
+import StepReady from "./StepReady";
 
 const steps = [
   { label: "Restaurant", icon: Building2 },
-  { label: "Documents", icon: FileText },
-  { label: "Personnalisation", icon: Palette },
-  { label: "En attente", icon: Clock },
+  { label: "Fidélité", icon: Gift },
+  { label: "Prêt !", icon: Rocket },
 ];
 
+function generateSlugFromName(name: string): string {
+  return (
+    name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "mon-restaurant"
+  );
+}
+
 export default function OnboardingShell() {
+  const { step: savedStep, setStep: saveStep, complete } = useOnboarding();
+  const { user } = useUser();
   const [currentStep, setCurrentStep] = useState(0);
 
   const [restaurantInfo, setRestaurantInfo] = useState<RestaurantInfoData>({
     name: "",
     address: "",
     phone: "",
-    logoFiles: [],
-  });
-
-  const [documentData, setDocumentData] = useState<DocumentUploadData>({
-    menuFiles: [],
-  });
-
-  const [brandData, setBrandData] = useState<BrandData>({
     primaryColor: "#ea580c",
     secondaryColor: "#171717",
   });
 
-  const goNext = () =>
-    setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+  const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfigData>({
+    slug: "",
+    points_per_euro: 10,
+    reward_threshold: 500,
+    reward_description: "1 Bowl offert",
+    welcome_points: 50,
+  });
+
+  // Pre-fill restaurant name from signup
+  useEffect(() => {
+    if (user?.restaurantName && !restaurantInfo.name) {
+      const name = user.restaurantName;
+      setRestaurantInfo((prev) => ({ ...prev, name }));
+      setLoyaltyConfig((prev) => ({
+        ...prev,
+        slug: prev.slug || generateSlugFromName(name),
+      }));
+    }
+  }, [user?.restaurantName, restaurantInfo.name]);
+
+  // Resume from saved step
+  useEffect(() => {
+    if (savedStep > 0 && savedStep <= 2) {
+      setCurrentStep(savedStep);
+    }
+  }, [savedStep]);
+
+  const goNext = useCallback(async () => {
+    const nextStep = Math.min(currentStep + 1, steps.length - 1);
+    setCurrentStep(nextStep);
+    await saveStep(nextStep);
+  }, [currentStep, saveStep]);
+
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 0));
+
+  // When step 1 completes, auto-generate slug if empty
+  const handleStep1Next = async () => {
+    if (!loyaltyConfig.slug) {
+      setLoyaltyConfig((prev) => ({
+        ...prev,
+        slug: generateSlugFromName(restaurantInfo.name),
+      }));
+    }
+    await goNext();
+  };
+
+  const handleComplete = useCallback(async () => {
+    await complete();
+  }, [complete]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 max-w-4xl">
@@ -122,26 +173,20 @@ export default function OnboardingShell() {
             <StepRestaurantInfo
               data={restaurantInfo}
               onChange={setRestaurantInfo}
-              onNext={goNext}
+              onNext={handleStep1Next}
             />
           )}
           {currentStep === 1 && (
-            <StepDocumentUpload
-              data={documentData}
-              onChange={setDocumentData}
+            <StepLoyaltyConfig
+              data={loyaltyConfig}
+              onChange={setLoyaltyConfig}
               onNext={goNext}
               onBack={goBack}
             />
           )}
           {currentStep === 2 && (
-            <StepBrandCustomization
-              data={brandData}
-              onChange={setBrandData}
-              onNext={goNext}
-              onBack={goBack}
-            />
+            <StepReady slug={loyaltyConfig.slug} onComplete={handleComplete} />
           )}
-          {currentStep === 3 && <StepWaiting onBack={goBack} />}
         </div>
       </div>
     </div>

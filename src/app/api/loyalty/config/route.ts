@@ -104,16 +104,50 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    // Validate slug if provided
+    if (updates.slug !== undefined) {
+      const slug = String(updates.slug).toLowerCase().trim();
+      if (slug.length < 3 || slug.length > 50) {
+        return NextResponse.json(
+          { error: "Slug invalide (3-50 caractères)" },
+          { status: 400 }
+        );
+      }
+      if (!/^[a-z0-9-]+$/.test(slug)) {
+        return NextResponse.json(
+          { error: "Slug invalide (lettres, chiffres et tirets uniquement)" },
+          { status: 400 }
+        );
+      }
+      // Check uniqueness
+      const { data: existing } = await supabase
+        .from("loyalty_configs")
+        .select("id, restaurant_id")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (existing && existing.restaurant_id !== restaurantId) {
+        return NextResponse.json(
+          { error: "Ce slug est déjà utilisé" },
+          { status: 409 }
+        );
+      }
+    }
+
     const allowedFields = [
       "points_per_euro",
       "reward_threshold",
       "reward_description",
       "welcome_points",
+      "slug",
     ] as const;
     const filtered: Record<string, unknown> = {};
     for (const key of allowedFields) {
       if (updates[key] !== undefined) {
-        filtered[key] = updates[key];
+        filtered[key] =
+          key === "slug"
+            ? String(updates[key]).toLowerCase().trim()
+            : updates[key];
       }
     }
 
