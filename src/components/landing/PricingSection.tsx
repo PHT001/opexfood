@@ -105,6 +105,10 @@ export default function PricingSection() {
         body: JSON.stringify({ moduleIds, billing }),
       });
       if (res.status === 401) {
+        localStorage.setItem(
+          "pendingCheckout",
+          JSON.stringify({ moduleIds, billing })
+        );
         router.push("/signup");
         return;
       }
@@ -113,6 +117,13 @@ export default function PricingSection() {
         window.location.href = data.url;
       }
     } catch {
+      localStorage.setItem(
+        "pendingCheckout",
+        JSON.stringify({
+          moduleIds: selectedModules.map((idx) => indexToModuleId[idx]),
+          billing: isAnnual ? "annual" : "monthly",
+        })
+      );
       router.push("/signup");
     } finally {
       setCheckoutLoading(false);

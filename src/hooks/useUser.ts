@@ -60,3 +60,8 @@ export function useUser() {
 
   return { user, loading };
 }
+
+export function invalidateUserCache() {
+  cachedUser = null;
+  fetchPromise = null;
+}

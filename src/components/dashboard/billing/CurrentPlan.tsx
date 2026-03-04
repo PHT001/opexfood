@@ -49,13 +49,15 @@ export default function CurrentPlan() {
             {loading ? "Chargement…" : `${activeModules.length} module${activeModules.length > 1 ? "s" : ""} actif${activeModules.length > 1 ? "s" : ""}`}
           </p>
         </div>
-        <button
-          onClick={handleManageSubscription}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors"
-        >
-          <CreditCard className="w-4 h-4" />
-          Gérer l&apos;abonnement
-        </button>
+        {activeModules.length > 0 && (
+          <button
+            onClick={handleManageSubscription}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold transition-colors"
+          >
+            <CreditCard className="w-4 h-4" />
+            Gérer l&apos;abonnement
+          </button>
+        )}
       </div>
 
       <div className="space-y-3">
