@@ -3,9 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Menu, Bell } from "lucide-react";
 import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
-
-// Mock user initials
-const mockUserInitials = "UR";
+import { useUser } from "@/hooks/useUser";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Vue d'ensemble",
@@ -18,6 +16,7 @@ const pageTitles: Record<string, string> = {
 export default function DashboardTopbar() {
   const pathname = usePathname();
   const { theme } = useRestaurantTheme();
+  const { user: userInfo } = useUser();
 
   const pageTitle = pageTitles[pathname] || "Dashboard";
 
@@ -71,7 +70,7 @@ export default function DashboardTopbar() {
             className="text-xs font-semibold"
             style={{ color: theme.primaryDark }}
           >
-            {mockUserInitials}
+            {userInfo?.initials || "?"}
           </span>
         </div>
       </div>

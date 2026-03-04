@@ -3,12 +3,12 @@
 import { moduleDefinitions } from "@/lib/dashboard/constants";
 import SubscribedModuleCard from "@/components/dashboard/modules/SubscribedModuleCard";
 import AvailableModuleCard from "@/components/dashboard/modules/AvailableModuleCard";
-
-// Mock data (will come from Supabase later)
-const activeModuleIds = ["chatbot", "agent_vocal"];
-const billing = "monthly" as const;
+import { useBilling } from "@/hooks/useBilling";
 
 export default function ModulesPage() {
+  const { data, loading } = useBilling();
+  const activeModuleIds = data?.activeModules ?? [];
+
   const activeModules = moduleDefinitions.filter((m) =>
     activeModuleIds.includes(m.id)
   );
@@ -33,7 +33,7 @@ export default function ModulesPage() {
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {activeModules.map((m) => (
-            <SubscribedModuleCard key={m.id} module={m} billing={billing} />
+            <SubscribedModuleCard key={m.id} module={m} billing="monthly" />
           ))}
         </div>
       </div>

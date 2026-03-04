@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2, Sparkles, Loader2 } from "lucide-react";
 import type { ModuleDefinition } from "@/lib/dashboard/constants";
 import { getIcon } from "@/lib/dashboard/icons";
 
@@ -14,7 +14,34 @@ export default function AvailableModuleCard({
 }: AvailableModuleCardProps) {
   const Icon = getIcon(m.iconName);
   const [billing, setBilling] = useState<"monthly" | "annual">("annual");
+  const [loading, setLoading] = useState(false);
   const price = billing === "annual" ? m.priceAnnual : m.priceMonthly;
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          moduleIds: [m.id],
+          billing,
+          successUrl: `${window.location.origin}/dashboard/modules?success=1`,
+          cancelUrl: `${window.location.origin}/dashboard/modules`,
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Erreur lors de la souscription");
+      }
+    } catch {
+      alert("Erreur réseau");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 flex flex-col hover:border-orange-300 hover:shadow-md transition-all">
@@ -75,9 +102,17 @@ export default function AvailableModuleCard({
           <span className="text-slate-400">/mois</span>
         </p>
 
-        <button className="w-full py-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors">
-          <Sparkles className="w-4 h-4" />
-          Ajouter ce module
+        <button
+          onClick={handleSubscribe}
+          disabled={loading}
+          className="w-full py-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Sparkles className="w-4 h-4" />
+          )}
+          {loading ? "Redirection…" : "Ajouter ce module"}
         </button>
       </div>
     </div>

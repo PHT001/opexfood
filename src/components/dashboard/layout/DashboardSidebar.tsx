@@ -9,19 +9,15 @@ import { cn } from "@/lib/utils";
 import { sidebarNav } from "@/lib/dashboard/constants";
 import { getIcon } from "@/lib/dashboard/icons";
 import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
-
-// Mock data (will be replaced by Supabase later)
-const mockUser = {
-  email: "user@restaurant.com",
-  initials: "UR",
-};
-const mockRestaurant = {
-  name: "Mon Restaurant",
-};
+import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { theme } = useRestaurantTheme();
+  const { user: userInfo } = useUser();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Listen for toggle-sidebar event from the topbar hamburger button
@@ -53,7 +49,7 @@ export default function DashboardSidebar() {
             Food
           </span>
         </Link>
-        <p className="mt-1 text-sm" style={{ color: theme.secondary, opacity: 0.5 }}>{mockRestaurant.name}</p>
+        <p className="mt-1 text-sm" style={{ color: theme.secondary, opacity: 0.5 }}>{userInfo?.restaurantName || "Mon Restaurant"}</p>
       </div>
 
       {/* Navigation */}
@@ -98,18 +94,20 @@ export default function DashboardSidebar() {
               className="text-sm font-semibold"
               style={{ color: theme.primaryDark }}
             >
-              {mockUser.initials}
+              {userInfo?.initials || "?"}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm truncate" style={{ color: theme.secondary, opacity: 0.7 }}>{mockUser.email}</p>
+            <p className="text-sm truncate" style={{ color: theme.secondary, opacity: 0.7 }}>{userInfo?.email || "…"}</p>
           </div>
         </div>
         <button
           className="mt-3 flex items-center gap-2 text-sm hover:text-red-500 transition-colors w-full"
           style={{ color: theme.secondary, opacity: 0.5 }}
-          onClick={() => {
-            // Will be wired to Supabase signOut later
+          onClick={async () => {
+            const supabase = createClient();
+            await supabase.auth.signOut();
+            router.push("/");
           }}
         >
           <LogOut className="w-4 h-4" />
