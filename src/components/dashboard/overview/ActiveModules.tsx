@@ -4,16 +4,17 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { moduleDefinitions } from "@/lib/dashboard/constants";
 import { getIcon } from "@/lib/dashboard/icons";
-
-// Mock: which modules are active (will come from Supabase later)
-const activeModuleIds = ["chatbot", "agent_vocal"] as const;
+import { useBilling } from "@/hooks/useBilling";
 
 export default function ActiveModules() {
+  const { data } = useBilling();
+  const activeModuleIds = data?.activeModules ?? [];
+
   const activeModules = moduleDefinitions.filter((m) =>
-    (activeModuleIds as readonly string[]).includes(m.id)
+    activeModuleIds.includes(m.id)
   );
   const availableModules = moduleDefinitions.filter(
-    (m) => !(activeModuleIds as readonly string[]).includes(m.id)
+    (m) => !activeModuleIds.includes(m.id)
   );
 
   return (

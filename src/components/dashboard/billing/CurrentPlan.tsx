@@ -3,20 +3,27 @@
 import { CreditCard } from "lucide-react";
 import { moduleDefinitions } from "@/lib/dashboard/constants";
 import { getIcon } from "@/lib/dashboard/icons";
-
-// Mock data (will come from Supabase later)
-const activeModuleIds = ["chatbot", "agent_vocal"];
-const billing: "monthly" | "annual" = "monthly";
-const nextBillingDate = "1er avril 2026";
+import { useBilling } from "@/hooks/useBilling";
 
 export default function CurrentPlan() {
+  const { data, loading } = useBilling();
+  const activeModuleIds = data?.activeModules ?? [];
+
   const activeModules = moduleDefinitions.filter((m) =>
     activeModuleIds.includes(m.id)
   );
   const total = activeModules.reduce(
-    (sum, m) => sum + (billing === "annual" ? m.priceAnnual : m.priceMonthly),
+    (sum, m) => sum + m.priceMonthly,
     0
   );
+
+  const nextBillingDate = data?.subscription?.currentPeriodEnd
+    ? new Date(data.subscription.currentPeriodEnd).toLocaleDateString("fr-FR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : "—";
 
   const handleManageSubscription = async () => {
     try {
@@ -39,9 +46,7 @@ export default function CurrentPlan() {
             Plan actuel
           </h3>
           <p className="text-sm text-slate-500 mt-0.5">
-            {activeModules.length} module{activeModules.length > 1 ? "s" : ""}{" "}
-            actif{activeModules.length > 1 ? "s" : ""} — facturation{" "}
-            {billing === "annual" ? "annuelle" : "mensuelle"}
+            {loading ? "Chargement…" : `${activeModules.length} module${activeModules.length > 1 ? "s" : ""} actif${activeModules.length > 1 ? "s" : ""}`}
           </p>
         </div>
         <button
@@ -56,8 +61,7 @@ export default function CurrentPlan() {
       <div className="space-y-3">
         {activeModules.map((m) => {
           const Icon = getIcon(m.iconName);
-          const price =
-            billing === "annual" ? m.priceAnnual : m.priceMonthly;
+          const price = m.priceMonthly;
           return (
             <div
               key={m.id}

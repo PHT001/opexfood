@@ -1,30 +1,18 @@
 "use client";
 
 import { Download, FileText } from "lucide-react";
+import { useBilling } from "@/hooks/useBilling";
 
-interface InvoiceRow {
-  id: string;
-  date: string;
-  amount: string;
-  status: "paid" | "open" | "void";
-  pdfUrl?: string;
-}
-
-// Mock invoices (will come from Supabase later)
-const mockInvoices: InvoiceRow[] = [
-  { id: "1", date: "1 mars 2026", amount: "238,00 €", status: "paid" },
-  { id: "2", date: "1 février 2026", amount: "238,00 €", status: "paid" },
-  { id: "3", date: "1 janvier 2026", amount: "238,00 €", status: "paid" },
-  { id: "4", date: "1 décembre 2025", amount: "139,00 €", status: "paid" },
-];
-
-const statusLabels: Record<InvoiceRow["status"], { label: string; className: string }> = {
+const statusLabels: Record<string, { label: string; className: string }> = {
   paid: { label: "Payée", className: "bg-green-100 text-green-700" },
   open: { label: "En attente", className: "bg-yellow-100 text-yellow-700" },
   void: { label: "Annulée", className: "bg-slate-100 text-slate-500" },
 };
 
 export default function InvoiceHistory() {
+  const { data, loading } = useBilling();
+  const invoices = data?.invoices ?? [];
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-slate-100">
@@ -33,7 +21,11 @@ export default function InvoiceHistory() {
         </h3>
       </div>
 
-      {mockInvoices.length === 0 ? (
+      {loading ? (
+        <div className="px-6 py-12 text-center">
+          <p className="text-sm text-slate-400">Chargement…</p>
+        </div>
+      ) : invoices.length === 0 ? (
         <div className="px-6 py-12 text-center">
           <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
           <p className="text-sm text-slate-500">Aucune facture pour le moment.</p>
@@ -49,16 +41,23 @@ export default function InvoiceHistory() {
           </div>
 
           {/* Rows */}
-          {mockInvoices.map((inv) => {
-            const status = statusLabels[inv.status];
+          {invoices.map((inv) => {
+            const status = statusLabels[inv.status] ?? statusLabels.paid;
+            const dateStr = inv.date
+              ? new Date(inv.date).toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              : "—";
             return (
               <div
                 key={inv.id}
                 className="grid grid-cols-4 gap-4 px-6 py-3.5 items-center hover:bg-slate-50 transition-colors"
               >
-                <span className="text-sm text-slate-700">{inv.date}</span>
+                <span className="text-sm text-slate-700">{dateStr}</span>
                 <span className="text-sm font-semibold text-slate-900">
-                  {inv.amount}
+                  {inv.amount.toFixed(2)} €
                 </span>
                 <span>
                   <span
@@ -71,8 +70,10 @@ export default function InvoiceHistory() {
                   <button
                     className="inline-flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors"
                     onClick={() => {
-                      if (inv.pdfUrl) {
-                        window.open(inv.pdfUrl, "_blank");
+                      if (inv.invoice_pdf) {
+                        window.open(inv.invoice_pdf, "_blank");
+                      } else if (inv.invoice_url) {
+                        window.open(inv.invoice_url, "_blank");
                       }
                     }}
                   >
