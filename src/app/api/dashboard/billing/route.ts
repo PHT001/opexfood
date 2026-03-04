@@ -19,6 +19,23 @@ export async function GET() {
       .single();
 
     if (!restaurant) {
+      // Auto-create restaurant for users who signed up before the trigger
+      const name =
+        user.user_metadata?.restaurant_name || "Mon Restaurant";
+      const { data: newRestaurant } = await supabase
+        .from("restaurants")
+        .insert({ user_id: user.id, name })
+        .select("id")
+        .single();
+
+      if (!newRestaurant) {
+        return NextResponse.json({
+          subscription: null,
+          activeModules: [],
+          invoices: [],
+        });
+      }
+
       return NextResponse.json({
         subscription: null,
         activeModules: [],
