@@ -9,6 +9,7 @@ import {
   createTransaction,
 } from "@/lib/loyalty/queries";
 import type { ScanResponse } from "@/lib/loyalty/types";
+import { notifyPassUpdate } from "@/lib/loyalty/apns";
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,6 +92,9 @@ export async function POST(request: NextRequest) {
       description: null,
       staff_user_id: user.id,
     });
+
+    // Fire-and-forget: notify Apple Wallet devices to refresh the pass
+    notifyPassUpdate(barcode).catch(() => {});
 
     const response: ScanResponse = {
       client: updatedClient,
