@@ -12,13 +12,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 import type { LoyaltyClient, LoyaltyConfig } from "@/lib/loyalty/types";
 
 type SortKey = "name" | "points" | "total_visits" | "total_spent";
 
 export default function ClientsPage() {
-  const { theme } = useRestaurantTheme();
   const [clients, setClients] = useState<LoyaltyClient[]>([]);
   const [config, setConfig] = useState<LoyaltyConfig | null>(null);
   const [loading, setLoading] = useState(true);
@@ -177,9 +175,6 @@ export default function ClientsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 text-sm rounded-xl glass-input"
-              style={
-                { "--tw-ring-color": theme.primaryLight } as React.CSSProperties
-              }
             />
           </div>
         </div>
@@ -247,12 +242,10 @@ export default function ClientsPage() {
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-                          style={{ backgroundColor: theme.primaryLight }}
+                          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-orange-100"
                         >
                           <span
-                            className="text-xs font-bold"
-                            style={{ color: theme.primaryDark }}
+                            className="text-xs font-bold text-orange-700"
                           >
                             {client.name
                               .split(" ")
@@ -290,7 +283,7 @@ export default function ClientsPage() {
                             style={{
                               backgroundColor: nearReward
                                 ? "#4ade80"
-                                : theme.primary,
+                                : "#ea580c",
                               width: `${progress}%`,
                             }}
                           />

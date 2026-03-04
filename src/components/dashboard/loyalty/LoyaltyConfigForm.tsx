@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Save, Check } from "lucide-react";
-import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 
 interface LoyaltyConfigFormProps {
   initialConfig: {
@@ -15,7 +14,6 @@ interface LoyaltyConfigFormProps {
 }
 
 export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConfigFormProps) {
-  const { theme } = useRestaurantTheme();
   const [config, setConfig] = useState(initialConfig);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -55,7 +53,6 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
             value={config.points_per_euro}
             onChange={(e) => setConfig({ ...config, points_per_euro: Number(e.target.value) })}
             className="w-full px-3 py-2 text-sm rounded-xl glass-input"
-            style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
           />
           <p className="text-xs text-slate-400 mt-1">
             Ex: 10 pts/€ = une commande de 15€ donne 150 points
@@ -70,8 +67,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
               value={config.reward_threshold}
               onChange={(e) => setConfig({ ...config, reward_threshold: Number(e.target.value) })}
               className="w-full px-3 py-2 text-sm rounded-xl glass-input"
-              style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
-            />
+              />
             <span className="text-sm text-slate-500 shrink-0">pts</span>
           </div>
         </div>
@@ -83,7 +79,6 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
             onChange={(e) => setConfig({ ...config, reward_description: e.target.value })}
             placeholder="Ex: 1 Bowl offert"
             className="w-full px-3 py-2 text-sm rounded-xl glass-input"
-            style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
           />
         </div>
         <div>
@@ -95,8 +90,7 @@ export default function LoyaltyConfigForm({ initialConfig, onSave }: LoyaltyConf
               value={config.welcome_points}
               onChange={(e) => setConfig({ ...config, welcome_points: Number(e.target.value) })}
               className="w-full px-3 py-2 text-sm rounded-xl glass-input"
-              style={{ "--tw-ring-color": `${theme.primary}40` } as React.CSSProperties}
-            />
+              />
             <span className="text-sm text-slate-500 shrink-0">pts</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">

@@ -3,17 +3,15 @@
 import { useState } from "react";
 import { Clock, ChefHat, CheckCircle2 } from "lucide-react";
 import OrderCard from "@/components/dashboard/crm/OrderCard";
-import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 import { mockOrders, type Order, type OrderStatus } from "@/lib/dashboard/crm-data";
 
 const columns: { key: OrderStatus; label: string; icon: React.ElementType; staticColor: string; staticBg: string }[] = [
-  { key: "en_attente", label: "En attente", icon: Clock, staticColor: "#d97706", staticBg: "#fffbeb" },
-  { key: "en_preparation", label: "En préparation", icon: ChefHat, staticColor: "#2563eb", staticBg: "#eff6ff" },
-  { key: "prete", label: "Prêtes", icon: CheckCircle2, staticColor: "#16a34a", staticBg: "#f0fdf4" },
+  { key: "en_attente", label: "En attente", icon: Clock, staticColor: "#d97706", staticBg: "rgba(255, 251, 235, 0.7)" },
+  { key: "en_preparation", label: "En préparation", icon: ChefHat, staticColor: "#2563eb", staticBg: "rgba(239, 246, 255, 0.7)" },
+  { key: "prete", label: "Prêtes", icon: CheckCircle2, staticColor: "#16a34a", staticBg: "rgba(240, 253, 244, 0.7)" },
 ];
 
 export default function LiveCommandesPage() {
-  const { theme } = useRestaurantTheme();
   const [orders, setOrders] = useState<Order[]>(mockOrders);
 
   const handleMove = (id: string, newStatus: OrderStatus) => {
@@ -22,17 +20,10 @@ export default function LiveCommandesPage() {
     );
   };
 
-  const radius =
-    theme.borderRadius === "pill"
-      ? "0.75rem"
-      : theme.borderRadius === "rounded"
-        ? "0.5rem"
-        : "0.25rem";
-
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-lg font-bold" style={{ color: theme.secondary }}>
+        <h2 className="text-lg font-bold text-slate-900">
           Live Commandes
         </h2>
         <p className="text-sm text-slate-500 mt-0.5">
@@ -45,13 +36,10 @@ export default function LiveCommandesPage() {
           const Icon = col.icon;
           const colOrders = orders.filter((o) => o.status === col.key);
           return (
-            <div key={col.key}>
+            <div key={col.key} className="glass-column p-3">
               <div
-                className="flex items-center gap-2 mb-3 px-3 py-2"
-                style={{
-                  backgroundColor: col.staticBg,
-                  borderRadius: radius,
-                }}
+                className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg"
+                style={{ backgroundColor: col.staticBg }}
               >
                 <Icon className="w-4 h-4" style={{ color: col.staticColor }} />
                 <span

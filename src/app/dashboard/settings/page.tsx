@@ -5,22 +5,10 @@ import {
   Building2,
   MapPin,
   Phone,
-  Palette,
   Save,
   Check,
   Loader2,
 } from "lucide-react";
-
-const presetColors = [
-  { label: "Orange", value: "#ea580c" },
-  { label: "Rouge", value: "#dc2626" },
-  { label: "Bleu", value: "#2563eb" },
-  { label: "Vert", value: "#16a34a" },
-  { label: "Violet", value: "#7c3aed" },
-  { label: "Rose", value: "#db2777" },
-  { label: "Noir", value: "#171717" },
-  { label: "Marron", value: "#92400e" },
-];
 
 interface RestaurantSettings {
   name: string;
@@ -34,8 +22,6 @@ export default function SettingsPage() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [primaryColor, setPrimaryColor] = useState("#ea580c");
-  const [secondaryColor, setSecondaryColor] = useState("#171717");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -47,8 +33,6 @@ export default function SettingsPage() {
         setName(data.name || "");
         setAddress(data.address || "");
         setPhone(data.phone || "");
-        setPrimaryColor(data.primary_color || "#ea580c");
-        setSecondaryColor(data.secondary_color || "#171717");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -64,8 +48,6 @@ export default function SettingsPage() {
           name,
           address,
           phone,
-          primary_color: primaryColor,
-          secondary_color: secondaryColor,
         }),
       });
       if (res.ok) {
@@ -139,110 +121,6 @@ export default function SettingsPage() {
             placeholder="01 23 45 67 89"
             className="w-full rounded-xl glass-input px-3 py-2.5 text-sm text-slate-900"
           />
-        </div>
-      </div>
-
-      {/* Brand */}
-      <div className="glass-card rounded-2xl p-6 space-y-5">
-        <h2 className="text-base font-semibold text-slate-900">
-          Personnalisation visuelle
-        </h2>
-
-        <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
-            <Palette className="w-4 h-4" />
-            Couleur principale
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {presetColors.map((c) => (
-              <button
-                key={c.value}
-                onClick={() => setPrimaryColor(c.value)}
-                className="w-9 h-9 rounded-full border-2 transition-all"
-                style={{
-                  backgroundColor: c.value,
-                  borderColor:
-                    primaryColor === c.value ? c.value : "transparent",
-                  boxShadow:
-                    primaryColor === c.value
-                      ? `0 0 0 2px white, 0 0 0 4px ${c.value}, 0 4px 12px ${c.value}40`
-                      : "none",
-                }}
-                title={c.label}
-              />
-            ))}
-            <label className="w-9 h-9 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-orange-300 transition-colors overflow-hidden">
-              <input
-                type="color"
-                value={primaryColor}
-                onChange={(e) => setPrimaryColor(e.target.value)}
-                className="absolute w-12 h-12 opacity-0 cursor-pointer"
-              />
-              <span className="text-xs text-slate-400 font-bold">+</span>
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-3">
-            <Palette className="w-4 h-4" />
-            Couleur secondaire
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {presetColors.map((c) => (
-              <button
-                key={c.value}
-                onClick={() => setSecondaryColor(c.value)}
-                className="w-9 h-9 rounded-full border-2 transition-all"
-                style={{
-                  backgroundColor: c.value,
-                  borderColor:
-                    secondaryColor === c.value ? c.value : "transparent",
-                  boxShadow:
-                    secondaryColor === c.value
-                      ? `0 0 0 2px white, 0 0 0 4px ${c.value}, 0 4px 12px ${c.value}40`
-                      : "none",
-                }}
-                title={c.label}
-              />
-            ))}
-            <label className="w-9 h-9 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-orange-300 transition-colors overflow-hidden">
-              <input
-                type="color"
-                value={secondaryColor}
-                onChange={(e) => setSecondaryColor(e.target.value)}
-                className="absolute w-12 h-12 opacity-0 cursor-pointer"
-              />
-              <span className="text-xs text-slate-400 font-bold">+</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Preview */}
-        <div className="rounded-xl bg-white/40 backdrop-blur p-4 border border-white/60">
-          <p className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wide">
-            Apercu
-          </p>
-          <div className="flex items-center gap-4">
-            <div
-              className="w-10 h-10 rounded-xl shadow-sm"
-              style={{ backgroundColor: primaryColor }}
-            />
-            <div
-              className="w-10 h-10 rounded-xl shadow-sm"
-              style={{ backgroundColor: secondaryColor }}
-            />
-            <div className="flex-1 ml-2">
-              <div
-                className="h-2.5 rounded-full w-3/4 mb-2"
-                style={{ backgroundColor: primaryColor, opacity: 0.8 }}
-              />
-              <div
-                className="h-2 rounded-full w-1/2"
-                style={{ backgroundColor: secondaryColor, opacity: 0.5 }}
-              />
-            </div>
-          </div>
         </div>
       </div>
 

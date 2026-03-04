@@ -22,7 +22,6 @@ import {
   Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 import {
   mockDailyRevenue,
   mockTopMenus,
@@ -41,13 +40,12 @@ const statusBadge: Record<
   HistoryOrder["status"],
   { label: string; color: string; bg: string }
 > = {
-  livree: { label: "Livrée", color: "text-green-700", bg: "bg-green-50" },
-  annulee: { label: "Annulée", color: "text-red-700", bg: "bg-red-50" },
-  remboursee: { label: "Remboursée", color: "text-amber-700", bg: "bg-amber-50" },
+  livree: { label: "Livrée", color: "text-green-700", bg: "bg-green-50/80" },
+  annulee: { label: "Annulée", color: "text-red-700", bg: "bg-red-50/80" },
+  remboursee: { label: "Remboursée", color: "text-amber-700", bg: "bg-amber-50/80" },
 };
 
 export default function HistoriquePage() {
-  const { theme } = useRestaurantTheme();
   const [period, setPeriod] = useState<"semaine" | "mois">("semaine");
 
   const totalRevenue = mockDailyRevenue.reduce((s, d) => s + d.revenue, 0);
@@ -60,21 +58,21 @@ export default function HistoriquePage() {
       value: `${totalRevenue.toLocaleString("fr-FR")} €`,
       icon: Euro,
       color: "text-green-600",
-      bg: "bg-green-50",
+      bg: "bg-green-50/80",
     },
     {
       label: "Commandes",
       value: totalOrders.toString(),
       icon: ShoppingBag,
       color: "text-blue-600",
-      bg: "bg-blue-50",
+      bg: "bg-blue-50/80",
     },
     {
       label: "Panier moyen",
       value: `${avgOrder.toFixed(1)} €`,
       icon: TrendingUp,
       color: "text-orange-600",
-      bg: "bg-orange-50",
+      bg: "bg-orange-50/80",
     },
   ];
 
@@ -94,7 +92,7 @@ export default function HistoriquePage() {
           return (
             <div
               key={s.label}
-              className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4"
+              className="glass-card glass-card-hover rounded-xl p-4 flex items-center gap-4"
             >
               <div
                 className={cn(
@@ -114,7 +112,7 @@ export default function HistoriquePage() {
       </div>
 
       {/* Revenue chart */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+      <div className="glass-card rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900">
             Chiffre d&apos;affaires
@@ -125,8 +123,8 @@ export default function HistoriquePage() {
               className={cn(
                 "text-xs px-3 py-1 rounded-full font-medium transition-colors",
                 period === "semaine"
-                  ? "bg-slate-900 text-white"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                  ? "bg-orange-500 text-white"
+                  : "bg-white/50 text-slate-500 hover:bg-white/80"
               )}
             >
               Semaine
@@ -136,8 +134,8 @@ export default function HistoriquePage() {
               className={cn(
                 "text-xs px-3 py-1 rounded-full font-medium transition-colors",
                 period === "mois"
-                  ? "bg-slate-900 text-white"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                  ? "bg-orange-500 text-white"
+                  : "bg-white/50 text-slate-500 hover:bg-white/80"
               )}
             >
               Mois
@@ -163,7 +161,9 @@ export default function HistoriquePage() {
               <Tooltip
                 contentStyle={{
                   borderRadius: 12,
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid rgba(255,255,255,0.5)",
+                  background: "rgba(255,255,255,0.8)",
+                  backdropFilter: "blur(12px)",
                   boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.05)",
                 }}
                 formatter={(value) => [
@@ -173,7 +173,7 @@ export default function HistoriquePage() {
               />
               <Bar
                 dataKey="revenue"
-                fill={theme.primary}
+                fill="#ea580c"
                 radius={[6, 6, 0, 0]}
                 maxBarSize={40}
               />
@@ -183,7 +183,7 @@ export default function HistoriquePage() {
       </div>
 
       {/* Top menus */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+      <div className="glass-card rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <Trophy className="w-4 h-4 text-amber-500" />
           <h3 className="text-sm font-semibold text-slate-900">
@@ -197,8 +197,7 @@ export default function HistoriquePage() {
               className="flex items-center gap-4"
             >
               <span
-                className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0"
-                style={{ backgroundColor: theme.primaryLight, color: theme.primaryDark }}
+                className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0 bg-orange-100 text-orange-700"
               >
                 {i + 1}
               </span>
@@ -206,11 +205,10 @@ export default function HistoriquePage() {
                 <p className="text-sm font-medium text-slate-900 truncate">
                   {menu.name}
                 </p>
-                <div className="mt-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                <div className="mt-1 h-1.5 rounded-full bg-white/50 overflow-hidden">
                   <div
-                    className="h-full rounded-full"
+                    className="h-full rounded-full bg-orange-500"
                     style={{
-                      backgroundColor: theme.primary,
                       width: `${(menu.count / mockTopMenus[0].count) * 100}%`,
                     }}
                   />
@@ -230,12 +228,12 @@ export default function HistoriquePage() {
       </div>
 
       {/* Order history table */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/30">
           <h3 className="text-sm font-semibold text-slate-900">
             Historique des commandes
           </h3>
-          <button className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 transition-colors">
+          <button className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-orange-600 transition-colors">
             <Download className="w-3.5 h-3.5" />
             Exporter
           </button>
@@ -243,26 +241,26 @@ export default function HistoriquePage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
-                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+              <tr className="border-b border-white/20">
+                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Commande
                 </th>
-                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Date
                 </th>
-                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Client
                 </th>
-                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+                <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Articles
                 </th>
-                <th className="text-right text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+                <th className="text-right text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Total
                 </th>
-                <th className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+                <th className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Canal
                 </th>
-                <th className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
+                <th className="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 glass-table-header">
                   Statut
                 </th>
               </tr>
@@ -274,7 +272,7 @@ export default function HistoriquePage() {
                 return (
                   <tr
                     key={order.id}
-                    className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors"
+                    className="border-b border-white/15 last:border-0 glass-table-row"
                   >
                     <td className="px-6 py-3 text-sm font-semibold text-slate-900">
                       {order.id}
@@ -299,7 +297,7 @@ export default function HistoriquePage() {
                     <td className="px-6 py-3 text-center">
                       <span
                         className={cn(
-                          "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold",
+                          "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold glass-badge",
                           badge.bg,
                           badge.color
                         )}

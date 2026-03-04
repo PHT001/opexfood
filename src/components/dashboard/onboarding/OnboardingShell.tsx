@@ -39,8 +39,6 @@ export default function OnboardingShell() {
     name: "",
     address: "",
     phone: "",
-    primaryColor: "#ea580c",
-    secondaryColor: "#171717",
   });
 
   const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfigData>({

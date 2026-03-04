@@ -14,7 +14,6 @@ import {
   PartyPopper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 import CounterQRCode from "@/components/dashboard/loyalty/CounterQRCode";
 import LoyaltyConfigForm from "@/components/dashboard/loyalty/LoyaltyConfigForm";
 import BarcodeScanner from "@/components/dashboard/loyalty/BarcodeScanner";
@@ -25,7 +24,6 @@ type Mode = "scanner" | "numpad";
 type NumpadStep = "phone" | "confirm" | "success" | "redeemed";
 
 export default function KiosquePage() {
-  const { theme } = useRestaurantTheme();
   const [config, setConfig] = useState<LoyaltyConfig | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -230,7 +228,7 @@ export default function KiosquePage() {
                   client={scannedClient}
                   config={config}
                   onReset={handleScanReset}
-                  primaryColor={theme.primary}
+                  primaryColor="#ea580c"
                 />
               ) : (
                 <BarcodeScanner
@@ -243,7 +241,7 @@ export default function KiosquePage() {
                 <button
                   onClick={() => setScannerActive(true)}
                   className="w-full mt-4 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2"
-                  style={{ backgroundColor: theme.primary }}
+                  style={{ backgroundColor: "#ea580c" }}
                 >
                   <Camera className="w-4 h-4" />
                   Activer le scanner
@@ -321,7 +319,7 @@ export default function KiosquePage() {
                           )}
                           style={
                             phone.length >= 10
-                              ? { backgroundColor: theme.primary }
+                              ? { backgroundColor: "#ea580c" }
                               : undefined
                           }
                         >
@@ -391,7 +389,7 @@ export default function KiosquePage() {
                         <button
                           onClick={handleConfirm}
                           className="mt-6 w-full py-3 rounded-xl text-white font-semibold transition-colors"
-                          style={{ backgroundColor: theme.primary }}
+                          style={{ backgroundColor: "#ea580c" }}
                         >
                           Confirmer
                         </button>

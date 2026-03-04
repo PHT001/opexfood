@@ -2,7 +2,6 @@
 
 import { Clock, MessageCircle, Globe, Phone, MapPin } from "lucide-react";
 import type { Order } from "@/lib/dashboard/crm-data";
-import { useRestaurantTheme } from "./ThemeProvider";
 
 const channelConfig = {
   whatsapp: { icon: MessageCircle, label: "WhatsApp", color: "text-green-600" },
@@ -17,7 +16,6 @@ interface OrderCardProps {
 }
 
 export default function OrderCard({ order, onMove }: OrderCardProps) {
-  const { theme } = useRestaurantTheme();
   const channel = channelConfig[order.channel];
   const ChannelIcon = channel.icon;
 
@@ -33,29 +31,8 @@ export default function OrderCard({ order, onMove }: OrderCardProps) {
     prete: "",
   };
 
-  const radius =
-    theme.borderRadius === "pill"
-      ? "1rem"
-      : theme.borderRadius === "rounded"
-        ? "0.75rem"
-        : "0.375rem";
-
-  const btnRadius =
-    theme.borderRadius === "pill"
-      ? "9999px"
-      : theme.borderRadius === "rounded"
-        ? "0.5rem"
-        : "0.25rem";
-
   return (
-    <div
-      className="p-4 shadow-sm hover:shadow-md transition-shadow"
-      style={{
-        backgroundColor: theme.cardBg,
-        border: `1px solid ${theme.cardBorder}`,
-        borderRadius: radius,
-      }}
-    >
+    <div className="glass-order-card p-4">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-bold text-slate-400">{order.id}</span>
         <div className="flex items-center gap-1 text-xs text-slate-400">
@@ -64,13 +41,7 @@ export default function OrderCard({ order, onMove }: OrderCardProps) {
         </div>
       </div>
 
-      <p
-        className="text-sm mb-1"
-        style={{
-          color: theme.secondary,
-          fontWeight: theme.fontWeight === "bold" ? 700 : 600,
-        }}
-      >
+      <p className="text-sm font-semibold text-slate-900 mb-1">
         {order.customer}
       </p>
 
@@ -87,7 +58,7 @@ export default function OrderCard({ order, onMove }: OrderCardProps) {
           <ChannelIcon className={`w-3.5 h-3.5 ${channel.color}`} />
           <span className="text-xs text-slate-400">{channel.label}</span>
         </div>
-        <span className="text-sm font-bold" style={{ color: theme.secondary }}>
+        <span className="text-sm font-bold text-slate-900">
           {order.total.toFixed(2)} €
         </span>
       </div>
@@ -95,12 +66,7 @@ export default function OrderCard({ order, onMove }: OrderCardProps) {
       {nextStatus[order.status] && onMove && (
         <button
           onClick={() => onMove(order.id, nextStatus[order.status]!)}
-          className="mt-3 w-full py-1.5 text-xs font-semibold transition-colors"
-          style={{
-            backgroundColor: theme.primaryLight,
-            color: theme.primaryDark,
-            borderRadius: btnRadius,
-          }}
+          className="mt-3 w-full py-1.5 text-xs font-semibold rounded-lg bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors"
         >
           {nextLabel[order.status]} →
         </button>

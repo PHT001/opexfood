@@ -8,14 +8,12 @@ import { LogOut, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { sidebarNav } from "@/lib/dashboard/constants";
 import { getIcon } from "@/lib/dashboard/icons";
-import { useRestaurantTheme } from "@/components/dashboard/crm/ThemeProvider";
 import { useUser } from "@/hooks/useUser";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
-  const { theme } = useRestaurantTheme();
   const { user: userInfo } = useUser();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
