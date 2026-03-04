@@ -44,9 +44,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Auth pages: redirect to dashboard if already authenticated
+  // (except reset-password which needs an authenticated user)
   if (
     (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/signup") &&
+      request.nextUrl.pathname === "/signup" ||
+      request.nextUrl.pathname === "/forgot-password") &&
     user
   ) {
     const url = request.nextUrl.clone();
@@ -58,5 +60,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/signup"],
+  matcher: ["/dashboard/:path*", "/login", "/signup", "/forgot-password", "/reset-password"],
 };
