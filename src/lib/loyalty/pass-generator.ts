@@ -63,7 +63,7 @@ export async function generatePassBuffer(barcode: string): Promise<Buffer> {
     description: `Carte fidélité ${restaurantName}`,
     organizationName: restaurantName,
     passTypeIdentifier: "pass.com.opexfood.loyalty",
-    teamIdentifier: "CD5B83L1ZJ",
+    teamIdentifier: "CD5B83LLZJ",
     foregroundColor: "rgb(255, 255, 255)",
     backgroundColor: "rgb(234, 88, 12)",
     labelColor: "rgb(255, 255, 255)",
