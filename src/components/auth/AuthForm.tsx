@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
@@ -8,6 +8,21 @@ import { cn } from "@/lib/utils";
 
 interface AuthFormProps {
   mode: "login" | "signup";
+}
+
+// Translate Supabase error messages to French
+function translateError(message: string): string {
+  if (message.includes("Invalid login credentials"))
+    return "Email ou mot de passe incorrect.";
+  if (message.includes("Email not confirmed"))
+    return "Veuillez confirmer votre email avant de vous connecter.";
+  if (message.includes("Too many requests"))
+    return "Trop de tentatives. Veuillez patienter quelques minutes.";
+  if (message.includes("User already registered"))
+    return "Un compte existe déjà avec cet email.";
+  if (message.includes("Password should be"))
+    return "Le mot de passe doit contenir au moins 6 caractères.";
+  return message;
 }
 
 export default function AuthForm({ mode }: AuthFormProps) {
@@ -24,6 +39,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   const isLogin = mode === "login";
 
+  // Show error from URL params (e.g. ?error=auth_failed from callback)
+  useEffect(() => {
+    const urlError = searchParams.get("error");
+    if (urlError === "auth_failed") {
+      setError("La connexion a échoué. Veuillez réessayer.");
+    }
+  }, [searchParams]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -39,11 +62,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
         });
 
         if (error) {
-          setError(error.message);
+          setError(translateError(error.message));
           return;
         }
 
-        router.push(redirectTo);
+        // Use full page navigation instead of client-side routing
+        // to ensure cookies are properly sent to middleware (fixes iOS WebView)
+        window.location.href = redirectTo;
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -56,7 +81,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         });
 
         if (error) {
-          setError(error.message);
+          setError(translateError(error.message));
           return;
         }
 
